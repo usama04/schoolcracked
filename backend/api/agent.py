@@ -9,24 +9,13 @@ from langchain.memory import ConversationBufferWindowMemory
 import re
 import asyncio
 from langchain.callbacks.stdout import StdOutCallbackHandler
-from langchain.callbacks.base import CallbackManager
+from langchain.callbacks.base import BaseCallbackManager
 from langchain.callbacks.tracers import LangChainTracer
 from aiohttp import ClientSession
+import asyncio
 
 load_dotenv(dotenv_path="../.env")
 
-# Set up tools
-
-#search = SerpAPIWrapper()
-"""
-tools = [
-    Tool(
-        name="search",
-        func=search.arun,
-        description="Searches the web for Islamic websites to answer queries",
-    ),
-]
-"""
 # Set up the base template
 # Add this to the template for memory
 # Previous conversation history:
@@ -44,7 +33,7 @@ Action Input: the input to the action (optional)
 Observation: the result of the action (optional)
 ... (this Thought/Action/Action Input/Observation can repeat N times, if applicable)
 Thought: I now know the final answer (optional)
-Final Answer: a verbose final answer to the original input question which should contain references and/or examples to support your explanation.
+Final Answer: ```a verbose final answer to the original input question which should be formatted in markdown format.```
 
 Begin! Remember to be as authentic as possible as you are an AI Teaching Assistant! You may use the tools if necessary, but it is not mandatory.
 
@@ -111,46 +100,9 @@ class CustomOutputParser(AgentOutputParser):
 
 output_parser = CustomOutputParser()
 
-# Uncomment below for sync
-
-# tools = load_tools(["google-serper"])
-
-# llm = ChatOpenAI(temperature=0)
-
-# custom_prompt = CustomPromptTemplate(
-#     template=template,
-#     tools=tools,
-#     # This omits the `agent_scratchpad`, `tools`, and `tool_names` variables because those are generated dynamically
-#     # This includes the `intermediate_steps` variable because that is needed
-#     #input_variables=["input", "intermediate_steps", "history"], # Use when with history
-#     input_variables=["input", "intermediate_steps"],
-# )
-
-# # LLM chain consisting of the LLM and a prompt
-# llm_chain = LLMChain(llm=llm, prompt=custom_prompt)
-
-# tool_names = [tool.name for tool in tools]
-# agent = LLMSingleActionAgent(
-#     llm_chain=llm_chain, 
-#     output_parser=output_parser,
-#     stop=["\nObservation:"], 
-#     allowed_tools=tool_names
-# )
-
-# #memory=ConversationBufferWindowMemory(k=2)
-
-# agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, 
-#                                                     tools=tools, 
-#                                                     verbose=True, 
-#                                                     #memory=memory
-#                                                     )
-
-
-# Uncomment below for async
-
-manager = CallbackManager([StdOutCallbackHandler()])
+manager = BaseCallbackManager([StdOutCallbackHandler()])
 llm = ChatOpenAI(temperature=0, callback_manager=manager)
-async_tools = load_tools(["serpapi"], llm=llm, callback_manager=manager)
+async_tools = load_tools(["serpapi", "pal-math", "llm-math", "wolfram-alpha"], llm=llm, callback_manager=manager)
 tool_names = [tool.name for tool in async_tools]
 custom_prompt = CustomPromptTemplate(
     template=template,
@@ -174,3 +126,6 @@ async def async_agent_executor(inputs):
     agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=async_tools, verbose=False, callback_manager=manager)
     return await agent_executor.arun(inputs)
     
+if __name__ == "__main__":
+    query = input("Enter a query: ")
+    asyncio.run(async_agent_executor(query))
