@@ -13,7 +13,7 @@ class User(Base):
     id = sa.Column(sa.Integer, primary_key=True)
     email = sa.Column(sa.String(50), nullable=False, unique=True)
     hashed_password = sa.Column(sa.String(100), nullable=False)
-    scholar = sa.Column(sa.Boolean, default=False, nullable=True)
+    teacher = sa.Column(sa.Boolean, default=False)
     is_active = sa.Column(sa.Boolean, default=False)
     profile = orm.relationship('Profile', back_populates='user')
     chats = orm.relationship("Chats", back_populates="user")

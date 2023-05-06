@@ -190,15 +190,7 @@ async def verify_email(db: orm.Session, token: str):
         if dt.datetime.fromtimestamp(payload.get('exp')) < dt.datetime.utcnow():
             raise HTTPException(status_code=400, detail='Token expired')
         
-        if user.scholar == True:
-            mail = "Welcome to AalimGPT, your email has been verified successfully. Since you selected Scholar, Scholars are in the driving seat of this project and have extra priviledges on our platform. We will therefore, contact you shortly and verify your credentials and manually activate your account before you can start using our services."
-            subject = "Email Verification Successful"
-            await send_email(user.email, subject, mail)
-            user.is_active = False
-            await send_email(settings.ADMIN_EMAIL, "New Scholar Registered", f"New Scholar {user.email} and id {user.id} has registered. Please verify their credentials.")
-        else:
-            user.is_active = True
-        
+        user.is_active = True
         db.commit()
         db.refresh(user)
         return dict(message='Email verified successfully')
