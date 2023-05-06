@@ -294,45 +294,7 @@ async def provide_alternate_answer(db: orm.Session = Depends(get_db), user: sche
     return dict(message='Alternate answer provided successfully', answer=chat_obj.alt_response)
     
     
-async def mufti_gpt3(request: Request, db: orm.Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
-    received = await request.json()
-    #print(received)
-    messages = received["messages"]
-    #print(messages)
-    prompt = "You are a well versed Islamic Scholar who can be asked questions from and he can give answers according to Quran and Hadees with proper references with international numbering of the books of Ahadis. Respond in language question was asked in. Make sure all answers have evidence with it from Quran and Hadees. Be as verbose as possible.\n\n"
-    for message in messages:
-        if message["role"] == "questioner":
-            try:
-                mes = message["message"]
-            except KeyError:
-                mes = message["content"]
-            except:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
-            prompt += "Questioner: " + mes + "\n"
-        else:
-            try:
-                mes = message["message"]
-            except KeyError:
-                mes = message["content"]
-            except:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
-            prompt += "Scholar: " + mes + "\n"
-    #print(prompt)
-    response = openai.Completion.create(
-        engine=settings.OPENAI_CHAT_MODEL,
-        prompt=prompt + "\nScholar:",
-        temperature=0.5,
-        max_tokens=1000,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0.6
-    )
-    ret_response = {"user": "assistant", "message": response.choices[0].text}
-    chat = await save_chat_response(db, user, prompt=messages, generated_response=ret_response)
-    ret_response["chat_id"] = chat.id
-    return ret_response   
-    
-async def mufti_agent(request: Request, db: orm.Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+async def agent(request: Request, db: orm.Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
     recieved = await request.json()
     messages = recieved["messages"]
     prompt = "\n"

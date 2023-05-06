@@ -100,47 +100,6 @@ async def upload_image(file: UploadFile = File(...), db: orm.Session = Depends(s
     return await services.update_profile_image(db, user, file)
 
 ### CHATBOT ###
-# Prompt: You are a well versed Islamic Scholar and Mufti who can be asked questions from and he can give answers according to Quran and Sunnah with proper references.
-@app.post("/api/mufti")
-async def mufti(request: Request, db: orm.Session = Depends(services.get_db), user: schemas.User = Depends(services.get_current_user)):
-    if os.environ.get("OPENAI_CHAT_MODEL") == os.environ.get("OPENAI_MODEL"):
-        return await services.mufti_gpt3(request, db, user)
-    else:
-        received = await request.json()
-        messages = received["messages"]
-        prompt = [
-            {"role": "system", "content": "You are a well versed Islamic Scholar who can be asked questions from and he can give answers according to Quran and Hadees with proper references with international numbering of the books of Ahadis. Respond in language question was asked in. Make sure all answers have evidence with it from Quran and Hadees. Do NOT be an apologetic and answer with facts and dont shy away from objectively stating something wrong as wrong."},
-        ]
-        for message in messages:
-            if message["role"] == "user":
-                try:
-                    mes = message["message"]
-                except KeyError:
-                    mes = message["content"]
-                except:
-                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
-                prompt.append({"role": "user", "content": mes})
-            else:
-                try:
-                    mes = message["message"]
-                except KeyError:
-                    mes = message["content"]
-                except:
-                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
-                prompt.append({"role": "assistant", "content": mes})
-        response = openai.ChatCompletion.create(
-            model=settings.OPENAI_CHAT_MODEL,
-            messages=prompt,
-            temperature=0.5,
-            max_tokens=1000,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0.6
-        )
-        ret_response = {"user": "assistant", "message": response.choices[0].message.content}
-        chat = await services.save_chat_response(db, user, prompt=messages, generated_response=ret_response)
-        ret_response["chat_id"] = chat.id
-        return ret_response
 
 @app.get("/api/chat-history")
 async def get_chat_history(db: orm.Session = Depends(services.get_db), user: schemas.User = Depends(services.get_current_user)):
@@ -159,6 +118,6 @@ async def provide_alternate_answer(chat_id: int, alternate_answer: schemas.AltCh
     return await services.provide_alternate_answer(db, user, chat_id, alternate_answer)
 
 @app.post("/api/chatbot")
-async def aalimChat(request: Request, db: orm.Session = Depends(services.get_db), user: schemas.User = Depends(services.get_current_user)):
-    return await services.mufti_agent(request, db, user)
+async def agentChat(request: Request, db: orm.Session = Depends(services.get_db), user: schemas.User = Depends(services.get_current_user)):
+    return await services.agent(request, db, user)
         
