@@ -50,3 +50,4 @@ EMAIL_CONFIG = ConnectionConfig(
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=False,
 )
+WOLFRAM_ALPHA_APPID = os.environ.get("WOLFRAM_ALPHA_APPID")

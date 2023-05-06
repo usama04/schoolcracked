@@ -1,18 +1,20 @@
 from dotenv import load_dotenv
 from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser, load_tools
+from langchain.tools import BaseTool, Tool
 from langchain.prompts import BaseChatPromptTemplate
-from langchain import SerpAPIWrapper, LLMChain
+from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
 from typing import List, Union
 from langchain.schema import AgentAction, AgentFinish, HumanMessage
-from langchain.memory import ConversationBufferWindowMemory
 import re
-import asyncio
 from langchain.callbacks.stdout import StdOutCallbackHandler
 from langchain.callbacks.base import BaseCallbackManager
-from langchain.callbacks.tracers import LangChainTracer
-from aiohttp import ClientSession
+from typing import Optional, Type
+from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
+from langchain.utilities.wolfram_alpha import WolframAlphaAPIWrapper
+import wolframalpha
 import asyncio
+import settings
 
 load_dotenv(dotenv_path="../.env")
 
@@ -102,7 +104,35 @@ output_parser = CustomOutputParser()
 
 manager = BaseCallbackManager([StdOutCallbackHandler()])
 llm = ChatOpenAI(temperature=0, callback_manager=manager)
-async_tools = load_tools(["serpapi", "pal-math", "llm-math", "wolfram-alpha"], llm=llm, callback_manager=manager)
+async_tools = load_tools(["serpapi", "pal-math", "llm-math"], llm=llm, callback_manager=manager)
+
+class CustomWolframTool(BaseTool):
+    name = "wolfram_tool"
+    description = "Queries the Wolfram Alpha API. Useful for when you need to answer questions about Calculus, Algebra and Symbolic math. Input should be a search query."
+    client = wolframalpha.Client(settings.WOLFRAM_ALPHA_APPID)
+
+    def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> str:
+        """Use the tool."""
+        wolfram_wrapper = WolframAlphaAPIWrapper()
+        return wolfram_wrapper.run(query)
+    
+    async def _arun(self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
+        """Use the tool asynchronously."""
+        async def querywolf(question):
+          res = self.client.query(question)
+          return next(res.results).text
+        return await querywolf(query)
+    
+wolfram = CustomWolframTool()
+wolfram_tool = Tool(
+    name="Wolfram Alpha",
+    description = "Queries the Wolfram Alpha API. Useful for when you need to answer questions about Calculus, Algebra and Symbolic math. Input should be a search query.",
+    func=wolfram.run,
+    coroutine=wolfram.arun,
+)
+
+async_tools.append(wolfram_tool)
+
 tool_names = [tool.name for tool in async_tools]
 custom_prompt = CustomPromptTemplate(
     template=template,
@@ -112,6 +142,7 @@ custom_prompt = CustomPromptTemplate(
     #input_variables=["input", "intermediate_steps", "history"], # Use when with history
     input_variables=["input", "intermediate_steps"],
 )
+
 llm_chain = LLMChain(llm=llm, prompt=custom_prompt, callback_manager=manager)
 
 async def async_agent_executor(inputs):
@@ -126,6 +157,3 @@ async def async_agent_executor(inputs):
     agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=async_tools, verbose=False, callback_manager=manager)
     return await agent_executor.arun(inputs)
     
-if __name__ == "__main__":
-    query = input("Enter a query: ")
-    asyncio.run(async_agent_executor(query))
