@@ -12,6 +12,7 @@ from langchain.callbacks.base import BaseCallbackManager
 from typing import Optional, Type
 from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
 from langchain.utilities.wolfram_alpha import WolframAlphaAPIWrapper
+from langchain.utilities import WikipediaAPIWrapper
 import wolframalpha
 import asyncio
 import settings
@@ -23,7 +24,7 @@ load_dotenv(dotenv_path="../.env")
 # Previous conversation history:
 # {history}
 
-template = """"You are an AI Teaching Assistant. Answer the following questions as best as you can using your knowledge and expertise in the subject matter. You have access to the following tools:
+template = template = """"You are an AI Teaching Assistant. Answer the following questions as best as you can using your knowledge and expertise in the subject matter. You have access to the following tools:
 
 {tools}
 
@@ -35,7 +36,9 @@ Action Input: the input to the action (optional)
 Observation: the result of the action (optional)
 ... (this Thought/Action/Action Input/Observation can repeat N times, if applicable)
 Thought: I now know the final answer (optional)
-Final Answer: ```a verbose final answer to the original input question which should be formatted in markdown format.```
+Final Answer: ```md
+a verbose final answer to the original input question which should be formatted in markdown format. Do not mention the tool used in the final answer
+```
 
 Begin! Remember to be as authentic as possible as you are an AI Teaching Assistant! You may use the tools if necessary, but it is not mandatory.
 
@@ -122,7 +125,7 @@ class CustomWolframTool(BaseTool):
           res = self.client.query(question)
           return next(res.results).text
         return await querywolf(query)
-    
+
 wolfram = CustomWolframTool()
 wolfram_tool = Tool(
     name="Wolfram Alpha",
@@ -132,6 +135,34 @@ wolfram_tool = Tool(
 )
 
 async_tools.append(wolfram_tool)
+
+class CustomWikipediaTool(BaseTool):
+    name = "wikipedia_tool"
+    description = "Queries the Wikipedia API. Useful for when you need to answer questions about general knowledge and history. Input should be a search query."
+    
+    def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> str:
+        """Use the tool."""
+        wikipedia_wrapper = WikipediaAPIWrapper()
+        return wikipedia_wrapper.run(query)
+    
+    async def _arun(self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
+        """Use the tool asynchronously."""
+        async def querywiki(question):
+          wikipedia_wrapper = WikipediaAPIWrapper()
+          #return wikipedia.summary(question)
+          return wikipedia_wrapper.run(question)
+        
+        return await querywiki(query)
+    
+wiki = CustomWikipediaTool()
+wikipedia_tool = Tool(
+    name="Wikipedia Tool",
+    description = "Queries the Wikipedia API. Useful for when you need to answer questions about general knowledge and history. Input should be a search query.",
+    func=wiki.run,
+    coroutine=wiki.arun,
+)
+
+async_tools.append(wikipedia_tool)
 
 tool_names = [tool.name for tool in async_tools]
 custom_prompt = CustomPromptTemplate(
