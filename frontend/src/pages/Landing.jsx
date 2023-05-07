@@ -1,4 +1,9 @@
 import React, { useEffect } from 'react'
+import { BiCodeAlt } from 'react-icons/bi'
+import { TbMathIntegralX } from 'react-icons/tb'
+import { GiArchiveResearch } from 'react-icons/gi'
+import { HiDocument } from 'react-icons/hi'
+import { BsFillChatDotsFill } from 'react-icons/bs'
 import { Nav } from '../components/Nav'
 import { useNavigate, Link } from 'react-router-dom'
 import '../fonts/icomoon/style.css'
@@ -27,6 +32,13 @@ const Landing = () => {
     }
   }, [navigate])
 
+  const carousel = {
+    'backgroundImage': 'linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.30)), url("Carousel.png")',
+    'backgroundRepeat': 'no-repeat',
+    'backgroundSize': 'cover',
+    'backgroundPosition': 'center center',
+  }
+
   return (
     <div className='App'>
       <div className="site-wrap" id="home-section">
@@ -42,71 +54,71 @@ const Landing = () => {
 
 
 
-        <Nav />
+        <Nav /> 
 
-        <div className="site-section-cover overlay" style={{ backgroundImage: 'url("Carousel.png")' }}>
+        <div className="site-section-cover overlay" style={carousel}>
 
           <div className="container">
             <div className="row align-items-center justify-content-center">
               <div className="col-lg-10 text-center">
-                <h1>The <strong>Hub</strong> Of <strong>Tutorials</strong></h1>
+                <h1>Your <strong>AI</strong> Teaching <strong>Assistant</strong></h1>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="site-section bg-light pb-0">
-          <div className="container">
-            <div className="row align-items-stretch overlap">
-              <div className="col-lg-8">
-                <div className="box h-100">
-                  <div className="d-flex align-items-center">
-                    {/* <div className="img"><img src="images/img_1.jpg" className="img-fluid" alt="Image" /></div> */}
-                    <div className="text">
-                      <Link to="#" className="category">Tutorial</Link>
-                      <h3><Link to="#">Learning React Native</Link></h3>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum quidem totam exercitationem eveniet blanditiis nulla, et possimus, itaque alias maxime!</p>
-                      <p className="mb-0">
-                        <span className="brand-react h5"></span>
-                        <span className="brand-javascript h5"></span>
-                      </p>
-                      <p className="meta">
-                        <span className="mr-2 mb-2">1hr 24m</span>
-                        <span className="mr-2 mb-2">Advanced</span>
-                        <span className="mr-2 mb-2">Jun 18, 2020</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+        <div className="site-section bg-dark" id="features-section">
+        <div className="container">
+          <div className="row">
+            <div className="col">
+              <div className="heading mb-4">
+                <span className="caption">Teaching Assistant Capabilities</span>
+                <h2>Features</h2>
               </div>
-              <div className="col-lg-4">
-                <div className="box small h-100">
-                  <div className="d-flex align-items-center mb-2">
-                    {/* <div className="img"><img src="images/img_2.jpg" className="img-fluid" alt="Image" /></div> */}
-                    <div className="text">
-                      <Link to="#" className="category">Tutorial</Link>
-                      <h3><Link to="#">Learning React Native</Link></h3>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center mb-2">
-                    {/* <div className="img"><img src="images/img_3.jpg" className="img-fluid" alt="Image" /></div> */}
-                    <div className="text">
-                      <Link to="#" className="category">Tutorial</Link>
-                      <h3><Link to="#">Learning React Native</Link></h3>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center">
-                    {/* <div className="img"><img src="images/img_4.jpg" className="img-fluid" alt="Image" /></div> */}
-                    <div className="text">
-                      <Link to="#" className="category">Tutorial</Link>
-                      <h3><Link to="#">Learning React Native</Link></h3>
-                    </div>
-                  </div>
-                </div>
+            </div>  
+          </div>
+          <div className="row align-items-stretch">
+            <div className="col-lg-2">
+              <div className="course bg-dark">
+                <span className="wrap-icon"><BiCodeAlt /></span>
+                <h3>Code</h3>
+              </div>
+            </div>
+            <div className="col-lg-2">
+              <div className="course bg-dark">
+                <span className="wrap-icon"><TbMathIntegralX /></span>
+                <h3>Calculus</h3>
+              </div>
+            </div>
+            
+            <div className="col-lg-2">
+              <div className="course bg-dark">
+                <span className="wrap-icon"><GiArchiveResearch /></span>
+                <h3>Research</h3>
+              </div>
+            </div>
+            
+            <div className="col-lg-2">
+              <div className="course bg-dark">
+                <span className="wrap-icon"><HiDocument /></span>
+                <h3>Read Documents</h3>
+              </div>
+            </div>
+            <div className="col-lg-2">
+              <div className="course bg-dark">
+                <span className="wrap-icon"><BsFillChatDotsFill /></span>
+                <h3>Chat With You</h3>
+              </div>
+            </div>
+            <div className="col-lg-2">
+              <div className="course bg-dark">
+                <span className="wrap-icon brand-vue-dot-js"></span>
+                <h3>Vue</h3>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
       </div>
     </div>
