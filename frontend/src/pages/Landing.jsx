@@ -72,50 +72,44 @@ const Landing = () => {
           <div className="row">
             <div className="col">
               <div className="heading mb-4">
-                <span className="caption">Teaching Assistant Capabilities</span>
-                <h2>Features</h2>
+                <span className="caption">I AM A TEACHING ASSISTANT CHATBOT</span>
+                <h2>CAPABILITIES</h2>
               </div>
             </div>  
           </div>
           <div className="row align-items-stretch">
-            <div className="col-lg-2">
+            <div className="col-lg-3">
               <div className="course bg-dark">
                 <span className="wrap-icon"><BiCodeAlt /></span>
-                <h3>Code</h3>
+                <h3>Write Code</h3>
               </div>
             </div>
-            <div className="col-lg-2">
+            <div className="col-lg-3">
               <div className="course bg-dark">
                 <span className="wrap-icon"><TbMathIntegralX /></span>
-                <h3>Calculus</h3>
+                <h3>Advanced Math</h3>
               </div>
             </div>
             
-            <div className="col-lg-2">
+            <div className="col-lg-3">
               <div className="course bg-dark">
                 <span className="wrap-icon"><GiArchiveResearch /></span>
-                <h3>Research</h3>
+                <h3>Search Internet</h3>
               </div>
             </div>
             
-            <div className="col-lg-2">
+            <div className="col-lg-3">
               <div className="course bg-dark">
                 <span className="wrap-icon"><HiDocument /></span>
                 <h3>Read Documents</h3>
               </div>
             </div>
-            <div className="col-lg-2">
+            {/* <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><BsFillChatDotsFill /></span>
                 <h3>Chat With You</h3>
               </div>
-            </div>
-            <div className="col-lg-2">
-              <div className="course bg-dark">
-                <span className="wrap-icon brand-vue-dot-js"></span>
-                <h3>Vue</h3>
-              </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
