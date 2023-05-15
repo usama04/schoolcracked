@@ -11,7 +11,7 @@ const Chat = () => {
   const [input, setInput] = useState('');
   const [chatLog, setChatLog] = useState([]);
   const [fullChatLog, setFullChatLog] = useState([]);
-  const token = localStorage.getItem('usertoken');
+  const token = localStorage.getItem('access');
   const navigate = useNavigate();
   const [toggleSideMenu, setToggleSideMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +61,7 @@ const Chat = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('usertoken'),
+        'Authorization': 'Bearer ' + localStorage.getItem('access'),
       },
       body: JSON.stringify({
         messages: messages,

@@ -23,7 +23,7 @@ const Landing = () => {
   useEffect(() => {
     //loadScripts(scripts)
     try {
-      const token = localStorage.getItem('usertoken')
+      const token = localStorage.getItem('access')
       if (token.length > 5) {
         navigate('/chat')
       }
@@ -120,4 +120,4 @@ const Landing = () => {
   )
 }
 
-export { Landing }
+export default Landing

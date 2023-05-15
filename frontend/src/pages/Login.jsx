@@ -7,7 +7,7 @@ import { Nav } from '../components/Nav';
 import { login } from '../actions/auth';
 
 
-const Login = ({ login }) => {
+const Login = ({ login, isAuthenticated }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessages, setErrorMessages] = useState([]);
@@ -19,6 +19,10 @@ const Login = ({ login }) => {
     }
     // Is the user logged in?
     // If so, redirect them to the chat page
+
+    if (isAuthenticated) {
+        navigate('/chat')
+    }
 
     return (
         <div className="App">
@@ -48,13 +52,8 @@ const Login = ({ login }) => {
     )
 }
 
-// const mapStateToProps = (state) => {
-//     // is_authenticated: state.auth.is_authenticated,
-//     // user: state.auth.user,
-//     // error: state.auth.error,
-//     // loading: state.auth.loading,
-//     // token: state.auth.token,
-//     // refresh: state.auth.refresh,
-// }
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
 
-export default connect(null, { login })(Login);
+export default connect(mapStateToProps, { login })(Login);
