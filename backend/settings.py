@@ -51,3 +51,4 @@ EMAIL_CONFIG = ConnectionConfig(
     VALIDATE_CERTS=False,
 )
 WOLFRAM_ALPHA_APPID = os.environ.get("WOLFRAM_ALPHA_APPID")
+AUTH_BACKEND_URL = os.environ.get("AUTH_BACKEND_URL")

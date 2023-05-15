@@ -10,7 +10,7 @@ import settings
 import sqlalchemy.orm as orm
 from api.responses import CustomJSONResponse
 from fastapi import (Depends, FastAPI, File, Form, HTTPException, Request,
-                     UploadFile, WebSocket, status, WebSocketDisconnect)
+                     UploadFile, WebSocket, status, WebSocketDisconnect, Header)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
@@ -121,3 +121,6 @@ async def provide_alternate_answer(chat_id: int, alternate_answer: schemas.AltCh
 async def agentChat(request: Request, db: orm.Session = Depends(services.get_db), user: schemas.User = Depends(services.get_current_user)):
     return await services.agent(request, db, user)
         
+@app.post("/api/assistant")
+async def assistantChat(request: Request):
+    return await services.assistantChat(request)

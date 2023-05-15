@@ -4,7 +4,7 @@ import Sidemenu from '../components/Sidemenu';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Sidemenu.css'
 import { ThreeDotsVertical, SendFill } from 'react-bootstrap-icons';
-
+import axios from 'axios';
 
 const Chat = () => {
 
@@ -58,7 +58,7 @@ const Chat = () => {
 
     // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/mufti`, {
       animateMessages();
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chatbot`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/assistant`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

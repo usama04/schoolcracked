@@ -1,5 +1,6 @@
-from fastapi import Depends, HTTPException, UploadFile, File, Request, status
+from fastapi import Depends, HTTPException, UploadFile, File, Request, status, Header
 import fastapi.security as security
+import aiohttp
 from databases import database as db
 import sqlalchemy.orm as orm
 import databases.models as models
@@ -316,3 +317,52 @@ async def agent(request: Request, db: orm.Session = Depends(get_db), user: schem
     chat = await save_chat_response(db, user, prompt=messages, generated_response=ret_response)
     ret_response["chat_id"] = chat.id
     return ret_response
+
+async def assistantChat(request: Request):
+    header = request.headers
+    if "Authorization" not in header:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization header missing")
+    token = header["Authorization"].split("Bearer ")[1]
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    # Make request to AUTH_BACKEND_URL to validate token using aiohttp to /auth/jwt/verify with a post request
+    async with aiohttp.ClientSession() as session:
+        async with session.post(settings.AUTH_BACKEND_URL + "/auth/jwt/verify", json={"token": token}) as response:
+            if response.status != 200:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+            else:
+                # get user information from /auth/users/me
+                async with session.get(settings.AUTH_BACKEND_URL + "/auth/users/me", headers={"Authorization": "JWT " + token}) as user_response:
+                    user = await user_response.json()
+                    user = user["data"]
+                    user = schemas.User(**user)
+    try:
+        recieved = await request.json()
+        messages = recieved["messages"]
+        prompt = "\n"
+        for message in messages:
+            if message["role"] == "questioner":
+                try:
+                    mes = message["message"]
+                except KeyError:
+                    mes = message["content"]
+                except:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
+                prompt += "Questioner: " + mes + "\n"
+            else:
+                try:
+                    mes = message["message"]
+                except KeyError:
+                    mes = message["content"]
+                except:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
+                prompt += "Assistant: " + mes + "\n"
+        #agent_output = agent_executor.run(prompt)
+        #agent_output = await agent_executor.arun(prompt)
+        agent_output = await async_agent_executor(prompt)
+        if "Assistant:" in agent_output[:8]:
+            agent_output = agent_output.split("Assistant: ")[1]
+        ret_response = {"user": "assistant", "message": agent_output}
+        return ret_response
+    except:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="An error occured while processing the request")
