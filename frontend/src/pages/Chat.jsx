@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import ChatMessage from '../components/ChatMessage';
-import { Sidemenu } from '../components/Sidemenu';
+import Sidemenu from '../components/Sidemenu';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Sidemenu.css'
 import { ThreeDotsVertical, SendFill } from 'react-bootstrap-icons';
@@ -78,20 +78,19 @@ const Chat = () => {
   }
 
   return (
-    <div className="App">
-      <Sidemenu chatLog={chatLog} setChatLog={setChatLog} toggleSideMenu={toggleSideMenu} />
+    <div className='mainChat'>
+    <Sidemenu chatLog={chatLog} setChatLog={setChatLog} toggleSideMenu={toggleSideMenu} />
       <section className="chatbox">
         <div className="chatbox-container">
+        <div className="side-menu-toggle-btn" onClick={() => setToggleSideMenu(!toggleSideMenu)}>
+            <ThreeDotsVertical />
+          </div>
           <div className="chat-log">
             {chatLog.map((message, index) => (
               <ChatMessage key={index} message={message} chatLog={chatLog} />
             ))}
-
           </div>
           <div className="chat-input-holder">
-            <div className="side-menu-toggle-btn" onClick={() => setToggleSideMenu(!toggleSideMenu)}>
-              <ThreeDotsVertical />
-            </div>
             <div className="animation-container">
               {isLoading && <div className="loading-animation"></div>}
               <div className="thought-messages">

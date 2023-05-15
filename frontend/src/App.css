@@ -59,6 +59,7 @@
   overflow: scroll;
   scrollbar-width: thin;
   scrollbar-color: #888 #343541;
+  height: 100%;
 }
 
 .chatbox::-webkit-scrollbar {
@@ -339,4 +340,9 @@
 
 .thought-messages span:nth-child(3) {
   animation-delay: 10s;
+}
+
+.mainChat {
+  display: flex;
+  height: 100%;
 }

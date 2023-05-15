@@ -111,9 +111,6 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
 
     return (toggleSideMenu &&
         <aside className="sidemenu">
-            <div className="mt-5">
-                <Logout />
-            </div>
             <div className="sidemenu__button mb-3" onClick={() => setPassTrigger(true)}>
                 Change Password
             </div>
@@ -135,4 +132,4 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
     )
 }
 
-export { Sidemenu }
+export default Sidemenu

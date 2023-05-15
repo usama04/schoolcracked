@@ -49,7 +49,7 @@
   }
   
   .side-menu-toggle-btn {
-    position: fixed;
+    position: absolute;
     top: 3%;
     left: 0.5%;
     transform: translateY(-50%);

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { checkAuthenticated, load_user } from './actions/auth';
 import Nav from './components/Nav'
+import Sidemenu from './components/Sidemenu';
 
 const Layout = ({ checkAuthenticated, load_user, children }) => {
     useEffect(() => {
@@ -12,6 +13,7 @@ const Layout = ({ checkAuthenticated, load_user, children }) => {
     return (
         <div className='App'>
             <Nav />
+            <Sidemenu />
             {children}
         </div>
     );
