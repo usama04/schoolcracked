@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Sidemenu.css'
 import { ThreeDotsVertical, SendFill } from 'react-bootstrap-icons';
 
+
 const Chat = () => {
 
   // add state for input and chat log

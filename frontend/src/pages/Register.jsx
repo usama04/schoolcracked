@@ -1,10 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 //import { UserContext } from '../context/UserContext';
 import '../styles/sign-in.css';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { SuccessMessage } from '../components/SuccessMessage';
 //import { useNavigate } from 'react-router-dom';
-import { Nav } from '../components/Nav';
 import { PrivacyPolicy } from '../components/PrivacyPolicy';
 import { TermAndConditions } from '../components/TermAndConditions';
 
@@ -62,8 +61,6 @@ const Register = () => {
     }
 
   return (
-    <div className="App">
-      <Nav />
     <main className="form-signin w-100 m-auto pt-5 mt-5">
     {successMessage.length > 0 && <SuccessMessage message={successMessage} />}
     {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
@@ -130,7 +127,6 @@ const Register = () => {
     <button className="w-100 btn btn-lg btn-success" type="submit">Register</button>
   </form>
   </main>
-  </div>
   )
 }
 

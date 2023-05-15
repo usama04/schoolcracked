@@ -4,7 +4,6 @@ import { TbMathIntegralX } from 'react-icons/tb'
 import { GiArchiveResearch } from 'react-icons/gi'
 import { HiDocument } from 'react-icons/hi'
 //import { BsFillChatDotsFill } from 'react-icons/bs'
-import { Nav } from '../components/Nav'
 import { useNavigate } from 'react-router-dom'
 import '../fonts/icomoon/style.css'
 import '../fonts/brand/style.css'
@@ -40,7 +39,6 @@ const Landing = () => {
   }
 
   return (
-    <div className='App'>
       <div className="site-wrap" id="home-section">
 
         <div className="site-mobile-menu site-navbar-target">
@@ -51,10 +49,6 @@ const Landing = () => {
           </div>
           <div className="site-mobile-menu-body"></div>
         </div>
-
-
-
-        <Nav /> 
 
         <div className="site-section-cover overlay" style={carousel}>
 
@@ -115,7 +109,6 @@ const Landing = () => {
       </div>
 
       </div>
-    </div>
 
   )
 }

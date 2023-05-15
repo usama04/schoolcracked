@@ -1,21 +1,28 @@
-import React, { useContext } from 'react'
-import { UserContext } from '../context/UserContext'
+import { logout } from '../actions/auth'
 import { useNavigate } from 'react-router-dom'
 import '../styles/Sidemenu.css'
+import { connect } from 'react-redux'
 
 
-const Logout = () => {
-    const { setToken } = useContext(UserContext);
+const Logout = ({ logout, isAuthenticated }) => {
     const navigate = useNavigate();
 
-    const logout = () => {
-        setToken(null);
+    const logoutfunc = () => {
+        logout();
         navigate('/');
     }
 
+    if (!isAuthenticated) {
+        navigate('/')
+    }
+
     return (
-        <div className='sidemenu__button mb-3' onClick={logout}>Logout</div>
+        <div className='sidemenu__button mb-3' onClick={logoutfunc}>Logout</div>
     )
 }
 
-export { Logout }
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { logout })(Logout)

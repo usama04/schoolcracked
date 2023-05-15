@@ -3,7 +3,6 @@ import '../styles/sign-in.css';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { useNavigate, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Nav } from '../components/Nav';
 import { login } from '../actions/auth';
 
 
@@ -25,8 +24,6 @@ const Login = ({ login, isAuthenticated }) => {
     }
 
     return (
-        <div className="App">
-            <Nav />
             <div className="container mt-5 pt-5">
                 <main className="form-signin w-100 m-auto mt-5 pt-5">
                     {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
@@ -48,7 +45,6 @@ const Login = ({ login, isAuthenticated }) => {
                     <Link to="/register" className="w-100 btn btn-lg btn-success">Register</Link>
                 </main>
             </div>
-        </div>
     )
 }
 

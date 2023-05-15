@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Nav } from '../components/Nav';
 import { useParams } from 'react-router-dom';
 
 const ResetPassword = () => {
@@ -39,8 +38,6 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className='App'>
-            <Nav />
             <main className="form-signin w-100 m-auto mt-5 pt-5">
                 {error && <div className="alert alert-danger">{error}</div>}
                 {message && <div className="alert alert-success">{message}</div>}
@@ -71,7 +68,6 @@ const ResetPassword = () => {
                     </div>
                 </form>
             </main>
-        </div>
     );
 };
 

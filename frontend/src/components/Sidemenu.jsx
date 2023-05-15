@@ -1,13 +1,12 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { UserContext } from '../context/UserContext'
-import { Logout } from './Logout'
+import React, { useState, useEffect } from 'react'
+import Logout from './Logout'
 import { Trash } from 'react-bootstrap-icons'
 import { ChangePassword } from './ChangePassword'
 import "../styles/Sidemenu.css"
 
 const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
     const [passTrigger, setPassTrigger] = useState(false);
-    const { token } = useContext(UserContext);
+    const token = localStorage.getItem('access');
     const [prompts, setPrompts] = useState([]);
 
     function clearChat() {
