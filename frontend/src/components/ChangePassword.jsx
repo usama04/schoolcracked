@@ -10,16 +10,16 @@ const ChangePassword = (properties) => {
     const [successMessages, setSuccessMessages] = useState([])
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/change-password`, {
+        const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/api/users/set_password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('usertoken')}`
+                'Authorization': `JWT ${localStorage.getItem('access')}`
             },
             body: JSON.stringify({
-                old_password: old_password,
+                current_password: old_password,
                 new_password: new_password,
-                confirm_password: confirm_password
+                re_new_password: confirm_password
             })
         });
         const data = await response.json();
@@ -54,7 +54,10 @@ const ChangePassword = (properties) => {
                 </form >
             </div>
         </div >
-    ) : "";
+    ) : (
+        <div>
+        </div>
+    );
 }
 
 export { ChangePassword }

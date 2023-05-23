@@ -5,14 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Sidemenu.css'
 import { ThreeDotsVertical, SendFill } from 'react-bootstrap-icons';
 import axios from 'axios';
+import { checkAuthenticated } from '../actions/auth';
+import { connect } from 'react-redux'
 
-const Chat = () => {
+const Chat = ({ checkAuthenticated ,isAuthenticated }) => {
 
   // add state for input and chat log
   const [input, setInput] = useState('');
   const [chatLog, setChatLog] = useState([]);
   const [fullChatLog, setFullChatLog] = useState([]);
-  const token = localStorage.getItem('access');
   const navigate = useNavigate();
   const [toggleSideMenu, setToggleSideMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,10 +36,10 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (token === null || token === undefined) {
-      navigate('/login');
+    if (!isAuthenticated) {
+      navigate('/');
     }
-  }, [token, navigate]);
+  }, [isAuthenticated, navigate]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -126,4 +127,8 @@ const Chat = () => {
   );
 }
 
-export { Chat };
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, {checkAuthenticated})(Chat);

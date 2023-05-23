@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Logout from './Logout'
 import { Trash } from 'react-bootstrap-icons'
 import { ChangePassword } from './ChangePassword'
 import "../styles/Sidemenu.css"
@@ -14,52 +13,52 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
     }
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/chat-history`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const prompts = data.map(item => {
-                    // const promptDict = JSON.parse(item.prompt);
-                    // const prompt = JSON.parse(promptDict)
-                    // const message = prompt[0].message
-                    // if (message !== undefined && message.length > 5) {
-                    //     return [message.toString().slice(0, 20), item.id]
-                    // }
-                    let decode;
-                    let promptList;
-                    if (typeof (item.prompt) === 'string') {
-                        promptList = JSON.parse(item.prompt);
-                        if (Array.isArray(promptList)) {
-                            decode = promptList;
-                        } else {
-                            decode = JSON.parse(promptList)
-                        }
-                    }
-                    else if (Array.isArray(item.prompt)) {
-                        decode = item.prompt;
-                    }
-                    else {
-                        decode = JSON.parse(item.prompt)
-                    }
-                    try {
-                        const messages = decode.map(prompt => prompt.message);
-                        const filteredMessages = messages.filter(message => message !== undefined && message.length > 5);
-                        if (filteredMessages.length > 0) {
-                            return [filteredMessages[0].toString().slice(0, 20), item.id];
-                        }
-                    }
-                    catch {
-                        console.log("Unable to fetch history")
-                    }
-                })
-                setPrompts(prompts);
-            })
-            .catch(error => console.log(error));
+        // fetch(`${process.env.REACT_APP_API_URL}/api/chat-history`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${token}`
+        //     }
+        // })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         const prompts = data.map(item => {
+        //             // const promptDict = JSON.parse(item.prompt);
+        //             // const prompt = JSON.parse(promptDict)
+        //             // const message = prompt[0].message
+        //             // if (message !== undefined && message.length > 5) {
+        //             //     return [message.toString().slice(0, 20), item.id]
+        //             // }
+        //             let decode;
+        //             let promptList;
+        //             if (typeof (item.prompt) === 'string') {
+        //                 promptList = JSON.parse(item.prompt);
+        //                 if (Array.isArray(promptList)) {
+        //                     decode = promptList;
+        //                 } else {
+        //                     decode = JSON.parse(promptList)
+        //                 }
+        //             }
+        //             else if (Array.isArray(item.prompt)) {
+        //                 decode = item.prompt;
+        //             }
+        //             else {
+        //                 decode = JSON.parse(item.prompt)
+        //             }
+        //             try {
+        //                 const messages = decode.map(prompt => prompt.message);
+        //                 const filteredMessages = messages.filter(message => message !== undefined && message.length > 5);
+        //                 if (filteredMessages.length > 0) {
+        //                     return [filteredMessages[0].toString().slice(0, 20), item.id];
+        //                 }
+        //             }
+        //             catch {
+        //                 console.log("Unable to fetch history")
+        //             }
+        //         })
+        //         setPrompts(prompts);
+        //     })
+        //     .catch(error => console.log(error));
     }, [token]);
 
     async function get_chat_history({ id }) {
@@ -111,7 +110,7 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
 
     return (toggleSideMenu &&
         <aside className="sidemenu">
-            <div className="sidemenu__button mb-3" onClick={() => setPassTrigger(true)}>
+            <div className="sidemenu__button mb-3" onClick={() => {setPassTrigger(true); console.log("Change Password")}}>
                 Change Password
             </div>
             <ChangePassword passTrigger={passTrigger} setPassTrigger={setPassTrigger} />
