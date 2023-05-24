@@ -4,7 +4,7 @@ import { ChangePassword } from './ChangePassword'
 import "../styles/Sidemenu.css"
 
 const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
-    const [passTrigger, setPassTrigger] = useState(false);
+    // const [passTrigger, setPassTrigger] = useState(false);
     const token = localStorage.getItem('access');
     const [prompts, setPrompts] = useState([]);
 
@@ -110,10 +110,10 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
 
     return (toggleSideMenu &&
         <aside className="sidemenu">
-            <div className="sidemenu__button mb-3" onClick={() => {setPassTrigger(true); console.log("Change Password")}}>
+            {/* <div className="sidemenu__button mb-3" onClick={() => {setPassTrigger(true); console.log("Change Password")}}>
                 Change Password
             </div>
-            <ChangePassword passTrigger={passTrigger} setPassTrigger={setPassTrigger} />
+            <ChangePassword passTrigger={passTrigger} setPassTrigger={setPassTrigger} /> */}
             <div className="sidemenu__button" onClick={clearChat}>
                 <span>+</span>
                 New Chat

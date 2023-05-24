@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { logout } from '../actions/auth'
 import { connect } from 'react-redux'
+import { ChangePassword } from './ChangePassword'
 //import '../styles/navstyle.css'
 import '../fonts/icomoon/style.css'
 import '../fonts/brand/style.css'
@@ -13,13 +14,14 @@ import '../styles/landing/css/owl.theme.default.min.css'
 import '../styles/landing/css/aos.css'
 import '../styles/landing/css/style.css'
 
-const Nav = ({logout, isAuthenticated}) => {
+const Nav = ({logout, isAuthenticated, setPassTrigger}) => {
   const navigate = useNavigate();
 
   const logoutfunc = () => {
     logout();
     navigate('/');
   }
+
 
   const guestLinks = (
     <ul className="site-menu main-menu js-clone-nav ml-auto ">
@@ -31,11 +33,11 @@ const Nav = ({logout, isAuthenticated}) => {
       </ul>
   )
 
-
   const authLinks = (
       <ul className="site-menu main-menu js-clone-nav ml-auto ">
         <li><Link to="/chat" className="nav-link">Chat TA</Link></li>
-        <li><button className='nav-link btn btn-danger px-4 py-2 rounded-0' onClick={logoutfunc}>Logout</button></li>
+        <li onClick={() => setPassTrigger(true)} className="nav-link px-4">Change Password </li>
+        <li><button className='nav-link btn btn-danger px-4 py-2' onClick={logoutfunc}> Logout</button></li> 
       </ul>
   )
 
@@ -58,13 +60,14 @@ const Nav = ({logout, isAuthenticated}) => {
             {isAuthenticated ? authLinks : guestLinks}
 
             </nav>
-
           </div>
         </div>
       </div>
     </header>
   )
 }
+
+
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated

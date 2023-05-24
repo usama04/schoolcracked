@@ -250,7 +250,10 @@
 }
 
 .popup2 {
-  position: absolute;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 40%;
   height: 40%;
   background-color: rgba(0, 0, 0, 0.9);

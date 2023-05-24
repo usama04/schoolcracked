@@ -10,7 +10,7 @@ const ChangePassword = (properties) => {
     const [successMessages, setSuccessMessages] = useState([])
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/api/users/set_password`, {
+        const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/auth/users/set_password/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -22,14 +22,15 @@ const ChangePassword = (properties) => {
                 re_new_password: confirm_password
             })
         });
-        const data = await response.json();
-        if (data.error) {
-            setErrorMessages(data.detail);
+        const status = await response.status;
+        if (status !== 204) {
+            setErrorMessages(['Password change failed.']);
         }
         else {
-            setSuccessMessages(data.message);
+            setSuccessMessages(['Password changed successfully.']);
         }
     }
+
     return (properties.passTrigger) ? (
         <div className="popup2">
             <div className="popup-inner2">

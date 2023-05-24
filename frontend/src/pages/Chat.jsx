@@ -7,6 +7,7 @@ import { ThreeDotsVertical, SendFill } from 'react-bootstrap-icons';
 import axios from 'axios';
 import { checkAuthenticated } from '../actions/auth';
 import { connect } from 'react-redux'
+import { ChangePassword } from '../components/ChangePassword';
 
 const Chat = ({ checkAuthenticated ,isAuthenticated }) => {
 
