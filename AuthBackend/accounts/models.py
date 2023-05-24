@@ -32,6 +32,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255, blank=True, null=True)
     company_name = models.CharField(max_length=255, blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
+    is_teacher = models.BooleanField(default=False)
     profile_pic_url = models.CharField(max_length=255, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     is_active = models.BooleanField(default=True)

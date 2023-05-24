@@ -36,7 +36,7 @@ const ChangePassword = (properties) => {
                 {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
                 {successMessages.length > 0 && <SuccessMessage message={successMessages} />}
                 <button className="btn btn-danger btn-close" onClick={() => properties.setPassTrigger(false)}></button>
-                <form>
+                <form className='mt-5 pt-5' onSubmit={handleSubmit}>
                     <h1 className="h3 mb-3 fw-normal">Change your Password</h1>
                     <div className="form-group">
                         <label htmlFor="password">Old Password</label>

@@ -51,6 +51,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "authorization.urls"
 
+DOMAIN = "http://schoolcracked.com"
+SITE_NAME = "SchoolCracked.com"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

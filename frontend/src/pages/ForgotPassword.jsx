@@ -9,7 +9,7 @@ const ForgotPassword = () => {
     const handleForgotPassword = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/forgot-password`, {
+            const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/auth/users/reset_password/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ const ForgotPassword = () => {
         <main className="form-signin w-100 m-auto mt-5 pt-5">
             {error && <div className="alert alert-danger">{error}</div>}
             {message && <div className="alert alert-success">{message}</div>}
-            <form>
+            <form className='mt-5 pt-5' onSubmit={handleForgotPassword}>
             <h1 className="h3 mb-3 fw-normal">Forgot Password</h1>
             <div className="form-group">
                 <label htmlFor="email" className="form-label">Email address</label>

@@ -6,6 +6,7 @@ import { SuccessMessage } from '../components/SuccessMessage';
 //import { useNavigate } from 'react-router-dom';
 import { PrivacyPolicy } from '../components/PrivacyPolicy';
 import { TermAndConditions } from '../components/TermAndConditions';
+import axios from 'axios';
 
 const Register = () => {
     const [firstName, setFirstName] = useState('');
@@ -16,8 +17,8 @@ const Register = () => {
     //const { setToken } = useContext(UserContext);
     const [errorMessages, setErrorMessages] = useState([]);
     const [successMessage, setSuccessMessage] = useState([]);
-    const [scholar, setScholar] = useState(false);
-    const [religion, setReligion] = useState('');
+    const [teacher, setTeacher] = useState(false);
+    const [company, setCompany] = useState('');
     const [location, setLocation] = useState('');
     const [privacyTrigger, setPrivacyTrigger] = useState(false);
     const [termsTrigger, setTermsTrigger] = useState(false);
@@ -28,43 +29,40 @@ const Register = () => {
         email: email,
         first_name: firstName,
         last_name: lastName,
-        scholar: scholar,
-        bio: religion,
+        company_name: company,
         location: location,
+        is_teacher: teacher,
         hashed_password: password,
         confirm_password: confirmPassword
       }
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestbody)
-        });
-        const data = await response.json();
-        if (data.error) {
-            setErrorMessages(data.detail);
-        } else {
-          //setToken(data.access_token);
-          setSuccessMessage(data.message);
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_AUTH_URL}/auth/users/`, requestbody);
+        const status = response.status;
+        if (status === 201) {
+          setSuccessMessage(['Registration successful. Please check your email for a verification link.']);
+        } else if (status === 400) {
+          setErrorMessages(['Registration failed. Please check your details and try again.']);
         }
+      } catch (error) {
+        console.error(error);
+      }
     }
 
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        if (password === confirmPassword && password.length > 5) {
-            submitRegistration();
-        } else {
-            setErrorMessages(['Passwords do not match or are less than 6 characters']);
-        }
+      e.preventDefault();
+      if (password === confirmPassword && password.length > 5) {
+        submitRegistration();
+      } else {
+        setErrorMessages(['Passwords do not match or are less than 6 characters']);
+      }
     }
 
   return (
     <main className="form-signin w-100 m-auto pt-5 mt-5">
     {successMessage.length > 0 && <SuccessMessage message={successMessage} />}
     {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="pt-5">
     <h1 className="h3 mb-3 fw-normal">Please Register</h1>
     <div className="form-group">
       <label htmlFor="firstName" className="control-label">First Name</label>
@@ -81,30 +79,12 @@ const Register = () => {
     <TermAndConditions termsTrigger={termsTrigger} setTermsTrigger={setTermsTrigger} />
     <PrivacyPolicy privacyTrigger={privacyTrigger} setPrivacyTrigger={setPrivacyTrigger} />
     <div className="form-group">
-      <label htmlFor="religion">Religion</label>
-      {/* Choose religion from a dropdown */}
-      <div className="dropdown">
-        <button className="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-          {religion}
-        </button>
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <li onClick={(e) => setReligion("Athiesm")} value="Athiesm" className="dropdown-item">Athiesm / Agnostic</li>
-          <li onClick={(e) => setReligion("Christianity")} value="Christianity" className="dropdown-item">Christianity</li>
-          <li onClick={(e) => setReligion("Islam (no sect)")} value="Islam no sect" className="dropdown-item">Islam (no sect)</li>
-          <li onClick={(e) => setReligion("Islam (Sunni, all sects)")} value="Sunni" className="dropdown-item">Islam (Sunni, all sects)</li>
-          <li onClick={(e) => setReligion("Islam (Shia, all sects)")} value="Shia" className="dropdown-item">Islam (Shia, all sects)</li>
-          <li onClick={(e) => setReligion("Judaism")} value="Judaism" className="dropdown-item">Judaism</li>
-          <li onClick={(e) => setReligion("Hinduism")} value="Hinduism" className="dropdown-item">Hinduism</li>
-          <li onClick={(e) => setReligion("Buddhism")} value="Buddhism" className="dropdown-item">Buddhism</li>
-          <li onClick={(e) => setReligion("Sikhism")} value="Sikhism" className="dropdown-item">Sikhism</li>
-          <li onClick={(e) => setReligion("Qadiani")} value="Qadiani" className="dropdown-item">Qadiani</li>
-          <li onClick={(e) => setReligion("Other")} value="other" className="dropdown-item">Other</li>
-        </ul>
-      </div>
-    </div>
-    <div className="form-group">
       <label htmlFor="location">Country</label>
       <input type="text" className="form-control rounded-2" value={location} onChange={(e) => setLocation(e.target.value)} id="location" placeholder="Country" />
+    </div>
+    <div className="form-group">
+      <label htmlFor="company">Institute</label>
+      <input type="text" className="form-control rounded-2" value={company} onChange={(e) => setCompany(e.target.value)} id="company" placeholder="Institute" />
     </div>
     <div className="form-group">
       <label htmlFor="password">Password</label>
@@ -115,10 +95,10 @@ const Register = () => {
       <input type="password" className="form-control rounded-2" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} id="confirmPassword" placeholder="Confirm Password" required/>
     </div>
     <div className="checkbox mb-3">
-      <label className="form-radio-label">Are you a scholar?</label>
-      <input type="radio" className="form-radio-input m-2" value={scholar} onChange={(e) => setScholar(true)} id="scholarTrue" name="scholar" />
+      <label className="form-radio-label">Are you a Teacher?</label>
+      <input type="radio" className="form-radio-input m-2" value={teacher} onChange={(e) => setTeacher(true)} id="teacherTrue" name="teacher" />
       <label className="form-radio-label">Yes</label>
-      <input type="radio" className="form-radio-input m-2" value={scholar} onChange={(e) => setScholar(false)} id="scholarFalse" name="scholar" />
+      <input type="radio" className="form-radio-input m-2" value={teacher} onChange={(e) => setTeacher(false)} id="teacherFalse" name="teacher" />
       <label className="form-radio-label">No</label>
     </div>
     <div className="checkbox mb-3">
