@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ErrorMessage } from './ErrorMessage'
 import { SuccessMessage } from './SuccessMessage'
+import axios from 'axios';
 
 const ChangePassword = (properties) => {
     const [old_password, setOldPassword] = useState('')
@@ -10,33 +11,31 @@ const ChangePassword = (properties) => {
     const [successMessages, setSuccessMessages] = useState([])
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/auth/users/set_password/`, {
-            method: 'POST',
+        try {
+          const response = await axios.post(`${process.env.REACT_APP_AUTH_URL}/auth/users/set_password/`, {
+            current_password: old_password,
+            new_password: new_password,
+            re_new_password: confirm_password
+          }, {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `JWT ${localStorage.getItem('access')}`
-            },
-            body: JSON.stringify({
-                current_password: old_password,
-                new_password: new_password,
-                re_new_password: confirm_password
-            })
-        });
-        const status = await response.status;
-        if (status !== 204) {
-            setErrorMessages(['Password change failed.']);
-        }
-        else {
+              'Content-Type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+          if (response.status === 204) {
             setSuccessMessages(['Password changed successfully.']);
+          }
+        } catch (error) {
+          setErrorMessages(['Password change failed.']);
         }
-    }
+      }
 
     return (properties.passTrigger) ? (
         <div className="popup2">
             <div className="popup-inner2">
-                <button className="btn btn-danger btn-close" onClick={() => properties.setPassTrigger(false)}></button>
                 {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
                 {successMessages.length > 0 && <SuccessMessage message={successMessages} />}
+                <button className="btn btn-danger btn-close" onClick={() => properties.setPassTrigger(false)}></button>
                 <form>
                     <h1 className="h3 mb-3 fw-normal">Change your Password</h1>
                     <div className="form-group">

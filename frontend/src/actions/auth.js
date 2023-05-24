@@ -85,10 +85,12 @@ export const login = (email, password) => async dispatch => {
             payload: res.data
         });
         dispatch(load_user());
+        return "success"
     } catch (err) {
         dispatch({
             type: LOGIN_FAIL
         });
+        return "error"
     }
 };
 

@@ -27,7 +27,8 @@ const auth = (state = initialState, action) => {
         case AUTHENTICATED_FAIL:
             return {
                 ...state,
-                isAuthenticated: false
+                isAuthenticated: false,
+                error: 'Invalid email or password'
             };
         case LOGOUT:
             localStorage.removeItem('access');
@@ -62,7 +63,8 @@ const auth = (state = initialState, action) => {
                 access: null,
                 refresh: null,
                 isAuthenticated: false,
-                user: null
+                user: null,
+                error: 'Invalid email or password'
             };
         case USER_LOADED_FAIL:
             return {

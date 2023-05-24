@@ -9,12 +9,15 @@ import { login } from '../actions/auth';
 const Login = ({ login, isAuthenticated }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessages, setErrorMessages] = useState([]);
+    const [errorMessages, setErrorMessages] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        login(email, password)
+        const res = await login(email, password);
+        if (res === 'error') {
+            setErrorMessages('Login failed. Please check your credentials.');
+        }
     }
     // Is the user logged in?
     // If so, redirect them to the chat page
@@ -26,7 +29,7 @@ const Login = ({ login, isAuthenticated }) => {
     return (
             <div className="container mt-5 pt-5">
                 <main className="form-signin w-100 m-auto mt-5 pt-5">
-                    {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
+                    {errorMessages && <ErrorMessage message={errorMessages} />}
                     <form onSubmit={handleSubmit}>
                         <h1 className="h3 mb-3 fw-normal">Please Login</h1>
                         <div className="form-group">
