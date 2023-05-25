@@ -7,7 +7,6 @@ import { ThreeDotsVertical, SendFill } from 'react-bootstrap-icons';
 import axios from 'axios';
 import { checkAuthenticated } from '../actions/auth';
 import { connect } from 'react-redux'
-import { ChangePassword } from '../components/ChangePassword';
 
 const Chat = ({ checkAuthenticated ,isAuthenticated }) => {
 
@@ -19,9 +18,10 @@ const Chat = ({ checkAuthenticated ,isAuthenticated }) => {
   const [toggleSideMenu, setToggleSideMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState([
-    "Researching",
-    "I am analysing my research",
-    "thinking how to respond best",
+    "Thinking...",
+    "Hmm...",
+    "Give me a second...",
+    "figuring out the best answer...",
   ]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [intervalId, setIntervalId] = useState(null);
