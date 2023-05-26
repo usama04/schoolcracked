@@ -4,7 +4,7 @@ import fastapi.security as security
 import boto3
 from fastapi_mail import ConnectionConfig
 
-load_dotenv()
+load_dotenv('.env')
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -52,3 +52,5 @@ EMAIL_CONFIG = ConnectionConfig(
 )
 WOLFRAM_ALPHA_APPID = os.environ.get("WOLFRAM_ALPHA_APPID")
 AUTH_BACKEND_URL = os.environ.get("AUTH_BACKEND_URL")
+MONGODB_ADMIN_USER = os.environ.get("MONGODB_ADMIN_USER")
+MONGODB_ADMIN_PASS = os.environ.get("MONGODB_ADMIN_PASS")
