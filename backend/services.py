@@ -8,11 +8,12 @@ from models.chats_models import Chat
 from schemas.chats_schemas import chat_serializer, chats_serializer
 from datetime import datetime as dt
 import pytz
+from typing import List, Optional, Dict
 
 openai.api_key = settings.OPENAI_API_KEY
 
 
-async def create_chat(user_id: int, prompt: str, generated: str):
+async def create_chat(user_id: int, prompt: Dict[str, str], generated: Dict[str, str]) -> dict:
     chat = {"user_id": user_id, "prompt": prompt, "generated": generated, "created_at": dt.now(tz=pytz.UTC)}
     result = collection_name.insert_one(chat)
     chat["_id"] = str(result.inserted_id)
@@ -65,7 +66,7 @@ async def assistantChat(request: Request):
         ret_response = {"user": "assistant", "message": agent_output}
         # Save chat to database
         try:
-            chat = await create_chat(user["id"], prompt, agent_output)
+            chat = await create_chat(user["id"], messages, ret_response)
         except:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="An error occured while processing the request")
         return ret_response
