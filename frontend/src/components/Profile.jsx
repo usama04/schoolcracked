@@ -14,7 +14,7 @@ function Profile(props) {
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/me`, {
+            const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/api/users/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

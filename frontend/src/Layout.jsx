@@ -14,8 +14,9 @@ const Layout = ({ checkAuthenticated, load_user, children }) => {
 
     return (
         <div className='App'>
+            {/* <Sidemenu /> */}
             <Nav passTrigger={passTrigger} setPassTrigger={setPassTrigger} />
-            <Sidemenu />
+            
             <ChangePassword passTrigger={passTrigger} setPassTrigger={setPassTrigger} />
             {children}
         </div>

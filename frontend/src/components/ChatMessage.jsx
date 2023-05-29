@@ -15,23 +15,24 @@ const ChatMessage = ({ message, chatLog }) => {
     const [responseRating, setResponseRating] = useState(0)
     // if messages in the chatlog are updated, re-render the chatlog
     const setProfilePicture = async () => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/me`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('usertoken')}`
-            }
-        });
-        const data = await response.json();
-        if (data.error) {
-            setErrorMessages(data.detail);
-        } else {
-            if (data.profile_image === null) {
-                setProfileImage('student.png')
-            } else {
-                setProfileImage(data.profile_image);
-            }
-        }
+        setProfileImage('student.png')
+        // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/me`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${localStorage.getItem('usertoken')}`
+        //     }
+        // });
+        // const data = await response.json();
+        // if (data.error) {
+        //     setErrorMessages(data.detail);
+        // } else {
+        //     if (data.profile_image === null) {
+        //         setProfileImage('student.png')
+        //     } else {
+        //         setProfileImage(data.profile_image);
+        //     }
+        // }
     }
 
     useEffect(() => {

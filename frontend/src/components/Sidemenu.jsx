@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Trash } from 'react-bootstrap-icons'
-import { ChangePassword } from './ChangePassword'
 import "../styles/Sidemenu.css"
+import { connect } from 'react-redux';
 
-const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
+const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu, user }) => {
     // const [passTrigger, setPassTrigger] = useState(false);
     const token = localStorage.getItem('access');
     const [prompts, setPrompts] = useState([]);
@@ -13,56 +13,52 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
     }
 
     useEffect(() => {
-        // fetch(`${process.env.REACT_APP_API_URL}/api/chat-history`, {
-        //     method: 'GET',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': `Bearer ${token}`
-        //     }
-        // })
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         const prompts = data.map(item => {
-        //             // const promptDict = JSON.parse(item.prompt);
-        //             // const prompt = JSON.parse(promptDict)
-        //             // const message = prompt[0].message
-        //             // if (message !== undefined && message.length > 5) {
-        //             //     return [message.toString().slice(0, 20), item.id]
-        //             // }
-        //             let decode;
-        //             let promptList;
-        //             if (typeof (item.prompt) === 'string') {
-        //                 promptList = JSON.parse(item.prompt);
-        //                 if (Array.isArray(promptList)) {
-        //                     decode = promptList;
-        //                 } else {
-        //                     decode = JSON.parse(promptList)
-        //                 }
-        //             }
-        //             else if (Array.isArray(item.prompt)) {
-        //                 decode = item.prompt;
-        //             }
-        //             else {
-        //                 decode = JSON.parse(item.prompt)
-        //             }
-        //             try {
-        //                 const messages = decode.map(prompt => prompt.message);
-        //                 const filteredMessages = messages.filter(message => message !== undefined && message.length > 5);
-        //                 if (filteredMessages.length > 0) {
-        //                     return [filteredMessages[0].toString().slice(0, 20), item.id];
-        //                 }
-        //             }
-        //             catch {
-        //                 console.log("Unable to fetch history")
-        //             }
-        //         })
-        //         setPrompts(prompts);
-        //     })
-        //     .catch(error => console.log(error));
-    }, [token]);
+        if (user !== null) {
+            fetch(`${process.env.REACT_APP_API_URL}/api/chats/${user.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const prompts = data.map(item => {
+                        let decode;
+                        let promptList;
+                        if (typeof (item.prompt) === 'string') {
+                          promptList = JSON.parse(item.prompt);
+                          if (Array.isArray(promptList)) {
+                            decode = promptList;
+                          } else {
+                            decode = JSON.parse(promptList)
+                          }
+                        }
+                        else if (Array.isArray(item.prompt)) {
+                          decode = item.prompt;
+                        }
+                        else {
+                          decode = JSON.parse(item.prompt)
+                        }
+                        try {
+                          const messages = decode.map(prompt => prompt.message);
+                          const filteredMessages = messages.filter(message => message !== undefined && message.length > 5);
+                          if (filteredMessages.length > 0) {
+                            return [filteredMessages[0].toString().slice(0, 20), item._id];
+                          }
+                        }
+                        catch {
+                          console.log("Unable to fetch history")
+                        }
+                      })
+                      setPrompts(prompts);
+                })
+                .catch(error => console.log(error));
+        }
+    }, [user, token])
 
     async function get_chat_history({ id }) {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-history/${id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chats/${user.id}/${id}/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,9 +67,12 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
         })
         const data = await response.json();
         const prompt = data.prompt
-        const bot_response = data.generated_response
-        const bot_response_dict = JSON.parse(bot_response)
-        const promptDict = JSON.parse(prompt);
+        const bot_response = data.generated
+        // console.log(bot_response)
+        // const bot_response_dict = JSON.parse(bot_response)
+        const bot_response_dict = bot_response
+        // const promptDict = JSON.parse(prompt);
+        const promptDict = prompt;
         if (promptDict !== null) {
             if (Array.isArray(promptDict)) {
                 const messages = promptDict.map((message) => ({
@@ -98,7 +97,7 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
     }
 
     async function delete_chat_history({ id }) {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-history/${id}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chats/${user.id}/${id}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -131,4 +130,8 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu }) => {
     )
 }
 
-export default Sidemenu
+const mapStateToProps = state => ({
+    user: state.auth.user
+});
+
+export default connect(mapStateToProps)(Sidemenu);
