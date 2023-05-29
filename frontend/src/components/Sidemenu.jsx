@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Trash } from 'react-bootstrap-icons'
 import "../styles/Sidemenu.css"
 import { connect } from 'react-redux';
+import { logout } from '../actions/auth'
 
-const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu, user }) => {
+const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu, user, logout }) => {
     // const [passTrigger, setPassTrigger] = useState(false);
     const token = localStorage.getItem('access');
     const [prompts, setPrompts] = useState([]);
+    const navigate = useNavigate();
 
     function clearChat() {
         setChatLog([]);
     }
+
+    const logoutfunc = () => {
+        logout();
+        navigate('/');
+      }
 
     useEffect(() => {
         if (user !== null) {
@@ -113,6 +121,9 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu, user }) => {
                 Change Password
             </div>
             <ChangePassword passTrigger={passTrigger} setPassTrigger={setPassTrigger} /> */}
+            <div className="sidemenu__button mb-3" onClick={logoutfunc}>
+                Logout
+            </div>
             <div className="sidemenu__button" onClick={clearChat}>
                 <span>+</span>
                 New Chat
@@ -134,4 +145,4 @@ const mapStateToProps = state => ({
     user: state.auth.user
 });
 
-export default connect(mapStateToProps)(Sidemenu);
+export default connect(mapStateToProps, { logout })(Sidemenu);

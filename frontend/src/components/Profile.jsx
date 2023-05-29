@@ -6,19 +6,19 @@ function Profile(props) {
     const inputRef = useRef();
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
-    const [bio, setBio] = useState('')
+    const [company_name, setCompanyName] = useState('')
     const [location, setLocation] = useState('')
-    const [dob, setDob] = useState('')
+    // const [dob, setDob] = useState('')
     const [errorMessages, setErrorMessages] = useState([])
     const [successMessages, setSuccessMessages] = useState([])
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/api/users/me`, {
+            const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/auth/users/me`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('usertoken')}`
+                    'Authorization': `JWT ${localStorage.getItem('access')}`
                 }
             });
             const data = await response.json();
@@ -27,27 +27,25 @@ function Profile(props) {
             } else {
                 setFirstName(data.first_name);
                 setLastName(data.last_name);
-                setBio(data.bio);
+                setCompanyName(data.company_name);
                 setLocation(data.location);
-                setDob(data.dob);
             }
         }
         fetchProfile();
     }, [])
 
     const updateProfile = async () => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/me`, {
+        const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/auth/users/me`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('usertoken')}`
+                'Authorization': `JWT ${localStorage.getItem('access')}`
             },
             body: JSON.stringify({
                 first_name: firstName,
                 last_name: lastName,
-                bio: bio,
-                location: location,
-                dob: dob
+                company_name: company_name,
+                location: location
             })
         });
         const data = await response.json();
@@ -59,7 +57,7 @@ function Profile(props) {
     }
 
     const delete_user = async () => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/me`, {
+        const response = await fetch(`${process.env.REACT_APP_AUTH_URL}/auth/users/me`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -103,12 +101,12 @@ function Profile(props) {
     return (props.trigger) ? (
         <div className='popup'>
             <div className="popup-inner">
-                {/*errorMessages.map((message, index) => {
+                {/* errorMessages.map((message, index) => {
                     return <ErrorMessage key={index} message={message} />
                 })}
                 {successMessages.map((message, index) => {
                     return <SuccessMessage key={index} message={message} />
-                })*/}
+                }) */}
                 <button className="btn btn-danger btn-close" onClick={() => props.setTrigger(false)}></button>
                 {props.children}
                 <h1 className="h3 mb-3 fw-normal">Edit Profile</h1>
@@ -126,8 +124,8 @@ function Profile(props) {
                     <input type="text" className="form-control rounded-2" value={lastName} onChange={(e) => setLastName(e.target.value)} id="lastName" />
                 </form>
                 <form>
-                    <label htmlFor="bio" className="control-label">Religion</label>
-                    <input type="text" className="form-control rounded-2" value={bio} onChange={(e) => setBio(e.target.value)} id="bio" />
+                    <label htmlFor="company_name" className="control-label">Institute</label>
+                    <input type="text" className="form-control rounded-2" value={company_name} onChange={(e) => setCompanyName(e.target.value)} id="company_name" />
                     <label htmlFor="location" className="control-label">Location</label>
                     <input type="text" className="form-control rounded-2" value={location} onChange={(e) => setLocation(e.target.value)} id="location" />
                     {/*<label htmlFor="dob" className="control-label">Date of Birth</label>

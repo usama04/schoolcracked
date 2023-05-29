@@ -49,10 +49,15 @@ const ChatMessage = ({ message, chatLog }) => {
             <div className="chat-message-center">
                 {(message.user === "assistant" || message.role === "assistant") && <img className='avatar chatgpt' src="AIImam.png" alt="Mufti" />}
                 {(message.user === "questioner" || message.role === "questioner") && <img className='avatar' src={profile_image} alt="questioner" onClick={() => setTrigger(true)} />}
-                <Profile trigger={trigger} setTrigger={setTrigger} />
-                <div className="message">
-                    {message.message}
-                    {(message.user === "assistant" || message.role === "assistant") && <div className="thumbs">
+                {/* <Profile trigger={trigger} setTrigger={setTrigger} /> */}
+                <span className="message">
+                    {message.message.split('\n').map((line, index) => (
+                        <React.Fragment key={index}>
+                        {line}
+                        <br />
+                        </React.Fragment>
+                    ))}
+                    {/* {(message.user === "assistant" || message.role === "assistant") && <div className="thumbs">
                         <button onClick={() => {
                             setResponseRating(1);
                             const response = fetch(`${process.env.REACT_APP_API_URL}/api/chat-history/${message.chat_id}`, {
@@ -88,11 +93,11 @@ const ChatMessage = ({ message, chatLog }) => {
                             }
                             ifScholarTriggerAnswer();
                         }
-                        }><HandThumbsDown className="thumbs-down" /></button>
-                        {answerTrigger && <AltAnswer answerTrigger={answerTrigger} setAnswerTrigger={setAnswerTrigger} questionId={message.chat_id} responseRating={responseRating} />}
+                        }><HandThumbsDown className="thumbs-down" /></button> */}
+                        {/* {answerTrigger && <AltAnswer answerTrigger={answerTrigger} setAnswerTrigger={setAnswerTrigger} questionId={message.chat_id} responseRating={responseRating} />}
                     </div>
-                    }
-                </div>
+                    } */}
+                </span>
             </div>
         </div>
     )
