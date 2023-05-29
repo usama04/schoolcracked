@@ -30,3 +30,11 @@ async def create_chat(user_id: int, prompt: List[Dict[str, str]], generated: Dic
     chat["_id"] = str(result.inserted_id)
     response = chat_serializer(chat)
     return response
+
+@chats_api_router.delete("/api/chats/{user_id}/{chat_id}")
+async def delete_chat(user_id: int, chat_id: str):
+    chat = collection_name.find_one({"_id": ObjectId(chat_id)})
+    if chat["user_id"] != user_id:
+        return {"status": "error", "message": "Unauthorized"}
+    collection_name.delete_one({"_id": ObjectId(chat_id)})
+    return {"status": "success", "message": "Chat deleted"}
