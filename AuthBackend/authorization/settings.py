@@ -18,7 +18,7 @@ SECRET_KEY = "django-insecure-)xe5)jklv*hze_z2r3+^&h_gwnd4d2d5knevy-_^p7pyai4v$7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -51,7 +51,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "authorization.urls"
 
-DOMAIN = "http://schoolcracked.com"
+DOMAIN = "schoolcracked.com"
 SITE_NAME = "SchoolCracked.com"
 
 TEMPLATES = [
