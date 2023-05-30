@@ -3,6 +3,7 @@ import { BiCodeAlt } from 'react-icons/bi'
 import { TbMathIntegralX } from 'react-icons/tb'
 import { GiArchiveResearch } from 'react-icons/gi'
 import { HiDocument } from 'react-icons/hi'
+import { BiImage } from 'react-icons/bi'
 //import { BsFillChatDotsFill } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 import '../fonts/icomoon/style.css'
@@ -72,38 +73,39 @@ const Landing = () => {
             </div>  
           </div>
           <div className="row align-items-stretch">
-            <div className="col-lg-3">
+            <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><BiCodeAlt /></span>
                 <h3>Write Code</h3>
               </div>
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><TbMathIntegralX /></span>
                 <h3>Advanced Math</h3>
               </div>
             </div>
             
-            <div className="col-lg-3">
+            <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><GiArchiveResearch /></span>
                 <h3>Search Internet</h3>
               </div>
             </div>
             
-            <div className="col-lg-3">
+            <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><HiDocument /></span>
-                <h3>Read Documents</h3>
+                <h3>Read Documents (To be released)</h3>
               </div>
             </div>
-            {/* <div className="col-lg-2">
+
+            <div className="col-lg-2">
               <div className="course bg-dark">
-                <span className="wrap-icon"><BsFillChatDotsFill /></span>
-                <h3>Chat With You</h3>
+                <span className="wrap-icon"><BiImage /></span>
+                <h3>Image Chat (To be released)</h3>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
