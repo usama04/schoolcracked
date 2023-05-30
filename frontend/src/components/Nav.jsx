@@ -48,7 +48,7 @@ const Nav = ({logout, isAuthenticated, setPassTrigger}) => {
 
           <div className="col-3">
             <div className="site-logo">
-              <Link to="/"><img src="logo.png" alt="logo" height="200" className="d-inline-block align-text-top" /></Link>
+              <Link to="/"><img src="static/images/logo.png" alt="logo" height="200" className="d-inline-block align-text-top" /></Link>
             </div>
           </div>
 

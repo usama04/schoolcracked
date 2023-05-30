@@ -32,7 +32,7 @@ const Landing = () => {
   }, [navigate])
 
   const carousel = {
-    'backgroundImage': 'linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.30)), url("Carousel.png")',
+    'backgroundImage': 'linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.30)), url("static/images/Carousel.png")',
     'backgroundRepeat': 'no-repeat',
     'backgroundSize': 'cover',
     'backgroundPosition': 'center center',

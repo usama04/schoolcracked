@@ -8,14 +8,14 @@ import { SuccessMessage } from './SuccessMessage'
 
 const ChatMessage = ({ message, chatLog }) => {
     const [trigger, setTrigger] = useState(false)
-    const [profile_image, setProfileImage] = useState('student.png')
+    const [profile_image, setProfileImage] = useState('static/images/student.png')
     const [errorMessages, setErrorMessages] = useState([])
     const [successMessages, setSuccessMessages] = useState([])
     const [answerTrigger, setAnswerTrigger] = useState(false)
     const [responseRating, setResponseRating] = useState(0)
     // if messages in the chatlog are updated, re-render the chatlog
     const setProfilePicture = async () => {
-        setProfileImage('student.png')
+        setProfileImage('static/images/student.png')
         // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/me`, {
         //     method: 'GET',
         //     headers: {
@@ -47,7 +47,7 @@ const ChatMessage = ({ message, chatLog }) => {
             {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
             {successMessages.length > 0 && <SuccessMessage message={successMessages} />}
             <div className="chat-message-center">
-                {(message.user === "assistant" || message.role === "assistant") && <img className='avatar chatgpt' src="AIImam.png" alt="Mufti" />}
+                {(message.user === "assistant" || message.role === "assistant") && <img className='avatar chatgpt' src="static/images/AIImam.png" alt="Mufti" />}
                 {(message.user === "questioner" || message.role === "questioner") && <img className='avatar' src={profile_image} alt="questioner" onClick={() => setTrigger(true)} />}
                 {/* <Profile trigger={trigger} setTrigger={setTrigger} /> */}
                 <span className="message">
