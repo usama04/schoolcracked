@@ -4,7 +4,7 @@ import { TbMathIntegralX } from 'react-icons/tb'
 import { GiArchiveResearch } from 'react-icons/gi'
 import { HiDocument } from 'react-icons/hi'
 import { BiImage } from 'react-icons/bi'
-//import { BsFillChatDotsFill } from 'react-icons/bs'
+import { BsPencilFill } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 import '../fonts/icomoon/style.css'
 import '../fonts/brand/style.css'
@@ -89,23 +89,31 @@ const Landing = () => {
             <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><GiArchiveResearch /></span>
-                <h3>Search Internet</h3>
+                <h3>Research Assistance</h3>
               </div>
             </div>
             
             <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><HiDocument /></span>
-                <h3>Read Documents (To be released)</h3>
+                <h3>Chat with Documents (To be released)</h3>
               </div>
             </div>
 
             <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><BiImage /></span>
-                <h3>Image Chat (To be released)</h3>
+                <h3>Chat with Images (To be released)</h3>
               </div>
             </div>
+
+            <div className="col-lg-2">
+              <div className="course bg-dark">
+                <span className="wrap-icon"><BsPencilFill /></span>
+                <h3>Plagiarism Checker (To be released)</h3>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

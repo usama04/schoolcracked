@@ -26,8 +26,8 @@ const Nav = ({logout, isAuthenticated, setPassTrigger}) => {
   const guestLinks = (
     <ul className="site-menu main-menu js-clone-nav ml-auto ">
         <li><Link to="index.html" className="nav-link">Home</Link></li>
-        <li><Link to="about.html" className="nav-link">About</Link></li>
-        <li><Link to="contact.html" className="nav-link">Contact</Link></li>
+        {/* <li><Link to="about.html" className="nav-link">About</Link></li>
+        <li><Link to="contact.html" className="nav-link">Contact</Link></li> */}
         <li><Link to="/login" className="nav-link btn btn-primary px-4 py-2 rounded-0"><span className="icon-users"></span> Login</Link></li>
         <li><Link to="/register" className="nav-link btn btn-primary px-4 py-2 rounded-0"><span className="icon-users"></span> Register</Link></li>
       </ul>
