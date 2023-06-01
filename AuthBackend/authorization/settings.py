@@ -2,6 +2,15 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+# import mimetypes
+
+# mimetypes.add_type("text/javascript", ".js", True)
+# mimetypes.add_type("text/javascript", ".js.map", True)
+# mimetypes.add_type("text/css", ".css", True)
+# mimetypes.add_type("text/css", ".css.map", True)
+# mimetypes.add_type("text/html", ".html", True)
+# mimetypes.add_type("text/html", ".css", True)
+
 
 load_dotenv()
 
@@ -49,10 +58,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+SECURE_CONTENT_TYPE_NOSNIFF = False
+
 ROOT_URLCONF = "authorization.urls"
 
 DOMAIN = "schoolcracked.com"
 SITE_NAME = "SchoolCracked.com"
+BASE_URL = "http://localhost:5000"
 
 TEMPLATES = [
     {

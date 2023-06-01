@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import '../styles/sign-in.css';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { SuccessMessage } from '../components/SuccessMessage';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PrivacyPolicy } from '../components/PrivacyPolicy';
 import { TermAndConditions } from '../components/TermAndConditions';
-import axios from 'axios';
+// import axios from 'axios';
+import { register } from '../actions/auth'
+import { connect } from 'react-redux';
 
-const Register = () => {
+const Register = ({ register, isAuthenticated }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -22,37 +24,46 @@ const Register = () => {
     const [location, setLocation] = useState('');
     const [privacyTrigger, setPrivacyTrigger] = useState(false);
     const [termsTrigger, setTermsTrigger] = useState(false);
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    const submitRegistration = async (e) => {
-      const requestbody = {
-        email: email,
-        first_name: firstName,
-        last_name: lastName,
-        company_name: company,
-        location: location,
-        is_teacher: teacher,
-        password: password,
-        re_password: confirmPassword
-      }
-      try {
-        const response = await axios.post(`${process.env.REACT_APP_AUTH_URL}/auth/users/`, requestbody);
-        const status = response.status;
-        if (status === 201) {
-          setSuccessMessage('Registration successful. Please check your email for a verification link.');
-        } else if (status === 400) {
-          setErrorMessages('Registration failed. Please check your details and try again.');
-        }
-      } catch (error) {
-        setErrorMessages('Registration failed. Please check your details and try again.');
-      }
+    if (isAuthenticated) {
+      navigate('/chat')
     }
+
+    // const submitRegistration = async (e) => {
+    //   const requestbody = {
+    //     email: email,
+    //     first_name: firstName,
+    //     last_name: lastName,
+    //     company_name: company,
+    //     location: location,
+    //     is_teacher: teacher,
+    //     password: password,
+    //     re_password: confirmPassword
+    //   }
+    //   try {
+    //     const response = await axios.post(`${process.env.REACT_APP_AUTH_URL}/auth/users/`, requestbody);
+    //     const status = response.status;
+    //     if (status === 201) {
+    //       setSuccessMessage('Registration successful. Please check your email for a verification link.');
+    //     } else if (status === 400) {
+    //       setErrorMessages('Registration failed. Please check your details and try again.');
+    //     }
+    //   } catch (error) {
+    //     setErrorMessages('Registration failed. Please check your details and try again.');
+    //   }
+    // }
 
 
     const handleSubmit = (e) => {
       e.preventDefault();
       if (password === confirmPassword && password.length > 5) {
-        submitRegistration();
+        try {
+          register({ email, firstName, lastName, company, location, teacher, password, confirmPassword })
+          setSuccessMessage('Registration successful. Please check your email for a verification link.');
+        } catch (error) {
+          setErrorMessages('Registration failed. Please check your details and try again.');
+        }
       } else {
         setErrorMessages('Passwords do not match or are less than 6 characters');
       }
@@ -116,4 +127,9 @@ const Register = () => {
   )
 }
 
-export { Register }
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+  }
+}
+export default connect(mapStateToProps, { register })(Register);

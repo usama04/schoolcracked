@@ -6,7 +6,7 @@ import Chat from './pages/Chat';
 import { Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
-import { Register } from './pages/Register';
+import Register from './pages/Register';
 import { ResetPassword } from './pages/ResetPassword';
 import { ForgotPassword } from './pages/ForgotPassword';
 import Activate from './pages/Activate';
@@ -30,7 +30,6 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/password/reset/confirm/:uid/:token" element={<ResetPassword />} />
             <Route path="/activate/:uid/:token" element={<Activate />} />
-            <Route path="*" element={<Landing />} />
           </Routes>
         </Layout>
       </Provider>

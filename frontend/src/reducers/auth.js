@@ -5,7 +5,11 @@ import {
     USER_LOADED_FAIL,
     AUTHENTICATED_SUCCESS,
     AUTHENTICATED_FAIL,
-    LOGOUT
+    LOGOUT,
+    REGISTER_SUCCESS,
+    REGISTER_FAIL,
+    ACTIVATION_SUCCESS,
+    ACTIVATION_FAIL
 } from '../actions/types';
 
 const initialState = {
@@ -55,6 +59,7 @@ const auth = (state = initialState, action) => {
                 isAuthenticated: true,
                 user: payload
             };
+        case REGISTER_FAIL:
         case LOGIN_FAIL:
             localStorage.removeItem('access');
             localStorage.removeItem('refresh');
@@ -71,6 +76,16 @@ const auth = (state = initialState, action) => {
                 ...state,
                 user: null,
                 isAuthenticated: false
+            };
+        case REGISTER_SUCCESS:
+            return {
+                ...state,
+                isAuthenticated: false
+            };
+        case ACTIVATION_SUCCESS:
+        case ACTIVATION_FAIL:
+            return {
+                ...state
             };
         default:
             return state;

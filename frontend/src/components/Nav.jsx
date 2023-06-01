@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { logout } from '../actions/auth'
 import { connect } from 'react-redux'
-import { ChangePassword } from './ChangePassword'
+// import { ChangePassword } from './ChangePassword'
 //import '../styles/navstyle.css'
 import '../fonts/icomoon/style.css'
 import '../fonts/brand/style.css'
@@ -48,7 +48,7 @@ const Nav = ({logout, isAuthenticated, setPassTrigger}) => {
 
           <div className="col-3">
             <div className="site-logo">
-              <Link to="/"><img src="static/images/logo.png" alt="logo" height="200" className="d-inline-block align-text-top" /></Link>
+              <Link to="/"><img src="/static/images/logo.png" alt="logo" height="200" className="d-inline-block align-text-top" /></Link>
             </div>
           </div>
 
