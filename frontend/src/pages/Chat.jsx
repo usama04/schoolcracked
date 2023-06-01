@@ -1,10 +1,10 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState } from 'react';
 import ChatMessage from '../components/ChatMessage';
 import Sidemenu from '../components/Sidemenu';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Sidemenu.css'
 import { ThreeDotsVertical, SendFill } from 'react-bootstrap-icons';
-import axios from 'axios';
+// import axios from 'axios';
 import { checkAuthenticated } from '../actions/auth';
 import { connect } from 'react-redux'
 
@@ -36,11 +36,9 @@ const Chat = ({ checkAuthenticated ,isAuthenticated }) => {
     );
   };
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, navigate]);
+  if (!isAuthenticated) {
+    navigate('/');
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();

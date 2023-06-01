@@ -36,7 +36,6 @@ async def assistantChat(request: Request):
                 # get user information from /auth/users/me
                 async with session.get(settings.AUTH_BACKEND_URL + "/auth/users/me/", headers={"Authorization": "JWT " + token}) as user_response:
                     user = await user_response.json()
-                    user = user["data"]
     try:
         recieved = await request.json()
         messages = recieved["messages"]
