@@ -12,7 +12,7 @@ async def main():
         "hypercorn",
         "api:app",
         "--bind", f"{settings.HOST}:{settings.PORT}",
-        "--workers", "6"
+        "--workers", "3"
     ]
     process = await asyncio.create_subprocess_exec(*command)
     

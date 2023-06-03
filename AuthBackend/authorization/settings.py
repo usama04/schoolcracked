@@ -2,14 +2,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
-# import mimetypes
-
-# mimetypes.add_type("text/javascript", ".js", True)
-# mimetypes.add_type("text/javascript", ".js.map", True)
-# mimetypes.add_type("text/css", ".css", True)
-# mimetypes.add_type("text/css", ".css.map", True)
-# mimetypes.add_type("text/html", ".html", True)
-# mimetypes.add_type("text/html", ".css", True)
 
 
 load_dotenv()
@@ -36,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "whitenoise.runserver_nostatic",  # whitenoise
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -51,6 +44,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",  # corsheaders
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # whitenoise
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
