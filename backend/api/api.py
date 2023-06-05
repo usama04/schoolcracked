@@ -23,4 +23,5 @@ app.include_router(chats_api_router)
         
 @app.post("/api/assistant")
 async def assistantChat(request: Request):
-    return await services.assistantChat(request)
+    # return await services.assistantChat(request)
+    return await services.agentChat(request)

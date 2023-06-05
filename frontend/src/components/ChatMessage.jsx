@@ -43,20 +43,21 @@ const ChatMessage = ({ message, chatLog }) => {
     }, [])
 
     return (
-        <div className={`chat-message ${message.role === "assistant" && "chatgpt"}`}>
+        <div className={`chat-message ${message.user === "assistant" && "chatgpt"}`}>
             {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
             {successMessages.length > 0 && <SuccessMessage message={successMessages} />}
             <div className="chat-message-center">
-                {(message.user === "assistant" || message.role === "assistant") && <img className='avatar chatgpt' src="static/images/AIImam.png" alt="Mufti" />}
+                {(message.user === "assistant" || message.user === "assistant") && <img className='avatar chatgpt' src="static/images/AIImam.png" alt="Mufti" />}
                 {(message.user === "questioner" || message.role === "questioner") && <img className='avatar' src={profile_image} alt="questioner" onClick={() => setTrigger(true)} />}
                 {/* <Profile trigger={trigger} setTrigger={setTrigger} /> */}
                 <span className="message">
-                    {message.message.split('\n').map((line, index) => (
+                    {/* {message.message.split('\n').map((line, index) => (
                         <React.Fragment key={index}>
                         {line}
                         <br />
                         </React.Fragment>
-                    ))}
+                    ))} */}
+                    {message.message}
                     {/* {(message.user === "assistant" || message.role === "assistant") && <div className="thumbs">
                         <button onClick={() => {
                             setResponseRating(1);

@@ -86,15 +86,17 @@ const Sidemenu = ({ chatLog, setChatLog, toggleSideMenu, user, logout }) => {
                 const messages = promptDict.map((message) => ({
                     role: message.role,
                     message: message.message,
+                    user: message.user
                 }));
-                const newAssistantMessage = { role: bot_response_dict.user, message: bot_response_dict.message };
+                const newAssistantMessage = { user: bot_response_dict.user, message: bot_response_dict.message };
                 setChatLog([...messages, newAssistantMessage]);
             } else {
                 const messages = JSON.parse(promptDict).map((message) => ({
                     role: message.role,
                     message: message.message,
+                    user: message.user
                 }));
-                const newAssistantMessage = { role: bot_response_dict.user, message: bot_response_dict.message };
+                const newAssistantMessage = { user: bot_response_dict.user, message: bot_response_dict.message };
                 setChatLog([...messages, newAssistantMessage]);
             }
             
