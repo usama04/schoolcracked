@@ -9,8 +9,8 @@ from datetime import datetime as dt
 import pytz
 from typing import List, Optional, Dict
 
-################# New conversational Agent imports
-from langchain.agents import load_tools
+################# Langchain Built-in conversational Agent imports
+from langchain.agents import load_tools, AgentExecutor
 from langchain.tools import BaseTool, Tool
 from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
@@ -23,6 +23,8 @@ from typing import Optional, Type
 from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
 import wolframalpha
 from dotenv import load_dotenv
+
+import api.convAgent as Conv_Agent
 
 load_dotenv()
 
@@ -119,7 +121,7 @@ async def assistantChat(request: Request):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="An error occured while processing the request")
     
     
-############## New Agent #################
+############## Langchain Built-in conversation Agent #################
     
 async def agentChat(request: Request):
     header = request.headers
@@ -185,3 +187,67 @@ async def agentChat(request: Request):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="An error occured while processing the request")
     
 ############################################
+
+############ Custom Conversation Agent #####################
+
+async def customAgentChat(request: Request):
+    header = request.headers
+    if "Authorization" not in header:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization header missing")
+    token = header["Authorization"].split("Bearer ")[1]
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    # Make request to AUTH_BACKEND_URL to validate token using aiohttp to /auth/jwt/verify with a post request
+    async with aiohttp.ClientSession() as session:
+        async with session.post(settings.AUTH_BACKEND_URL + "/auth/jwt/verify/", json={"token": token}) as response:
+            if response.status != 200:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+            else:
+                # get user information from /auth/users/me
+                async with session.get(settings.AUTH_BACKEND_URL + "/auth/users/me/", headers={"Authorization": "JWT " + token}) as user_response:
+                    user = await user_response.json()
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    try:
+        recieved = await request.json()
+        messages = recieved["messages"][:-1]
+        for message in messages:
+            if message["role"] == "questioner":
+                try:
+                    mes = message["message"]
+                except KeyError:
+                    mes = message["content"]
+                except:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
+                memory.buffer.append(HumanMessage(content=mes))
+            else:
+                try:
+                    mes = message["message"]
+                except KeyError:
+                    mes = message["content"]
+                except:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
+                memory.buffer.append(AIMessage(content=mes))
+        try:
+            prompt = recieved["messages"][-1]["message"]
+        except KeyError:
+            prompt = recieved["messages"][-1]["content"]
+        except:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message format")
+        agent = Conv_Agent.AITeachingAssistant.from_llm_and_tools(llm=llm, tools=async_tools, memory=memory, verbose=False)
+        agent_executor = AgentExecutor(agent=agent, tools=async_tools, memory=memory, verbose=False)
+        agent_output = await agent_executor.arun(input=prompt)
+        if agent_output:
+            ret_response = {"user": "assistant", "message": agent_output}
+             # Save chat to database
+            try:
+                chat = await create_chat(user["id"], recieved["messages"], ret_response)
+                # print("Chat saved", chat)
+            except:
+                # print("Error saving chat")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="An error occured while processing the request")
+        else:
+            ret_response = {"user": "assistant", "message": "I don't know what to say"}
+        memory.clear()
+        return ret_response
+    except:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="An error occured while processing the request")
