@@ -30,6 +30,19 @@ const ChatMessage = ({ message, chatLog }) => {
         parsedMessage = null;
     }
 
+    // Check if the parsed message has action_input
+    const hasActionInput = parsedMessage && parsedMessage.action_input;
+
+    // Reintroduce the backticks to the code portion
+    let actionInputWithBackticks = null;
+    if (hasActionInput) {
+        const codeBlockRegex = /```(\w+)\n([\s\S]*?)```/g;
+        actionInputWithBackticks = parsedMessage.action_input.replace(
+        codeBlockRegex,
+        '```\n$1\n$2\n```'
+        );
+    }
+
     return (
         <div className={`chat-message ${message.user === "assistant" && "chatgpt"}`}>
             {errorMessages.length > 0 && <ErrorMessage message={errorMessages} />}
@@ -40,7 +53,8 @@ const ChatMessage = ({ message, chatLog }) => {
                 <span className="message">
                     {/* {message.message} */}
                     {parsedMessage && parsedMessage.action_input ? (
-                    <ReactMarkdown>{parsedMessage.action_input}</ReactMarkdown>
+                    // <ReactMarkdown>{parsedMessage.action_input}</ReactMarkdown>
+                    <ReactMarkdown>{actionInputWithBackticks}</ReactMarkdown>
                         ) : (message.message)
                     }
                 </span>
