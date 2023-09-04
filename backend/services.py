@@ -7,8 +7,8 @@ from models.chats_models import Chat
 from schemas.chats_schemas import chat_serializer, chats_serializer
 from datetime import datetime as dt
 import pytz
-from typing import List, Optional, Dict
-
+from typing import Any, Coroutine, List, Optional, Dict
+from functools import partial
 ################# Langchain Built-in conversational Agent imports
 from langchain.agents import load_tools, AgentExecutor
 from langchain.tools import BaseTool, Tool
@@ -23,7 +23,12 @@ from typing import Optional, Type
 from langchain.callbacks.manager import AsyncCallbackManagerForToolRun, CallbackManagerForToolRun
 import wolframalpha
 from dotenv import load_dotenv
-
+from PIL import Image
+from urllib.parse import urlparse, quote_plus
+import replicate
+import os
+import asyncio
+import io
 import api.convAgent as Conv_Agent
 
 load_dotenv()
@@ -56,7 +61,144 @@ wolfram_tool = Tool(
     coroutine=wolfram.arun,
 )
 
-async_tools.append(wolfram_tool)
+class CustomImageReaderTool(BaseTool):
+    name = "image_reader_tool"
+    description = "Generates the description of an image from a prompt provided to it, Provides a list of objects detected if any, and also analyses any text in the image from an OCR if a text is present. \
+        The input format to this tool SHOULD BE in the following format: image_path|||prompt message where image_path is the path to the image and prompt is a COMPREHENSIVE AND VERBOSE and should be in English regarding the information required from the image.\
+        Output from image reader is always valid. You may summarize the objects detected portion if there are repeated objects.\
+        Make sure to give it a very detailed and comprehensive question as prompt.\
+        You must analyze the output from this tool and provide a comprehensive and detailed final answer based on your analysis of the output from this tool."
+        
+    async def image_caption_async(self, image_path_and_prompt):
+        """
+        Generates text in response to an input image and prompt. Useful for understanding the content of an image.
+        """
+        image_data = image_path_and_prompt.split("|||")
+        image_path = image_data[0]
+        prompt = image_data[1]
+        is_url = urlparse(image_path).scheme != ""
+
+        try:
+            loop = asyncio.get_event_loop()
+
+            def run_replicate():
+                if is_url:
+                    return replicate.run(settings.IMAGE_TO_TEXT, input={"image": image_path, "prompt": prompt})
+                else:
+                    with open(image_path, "rb") as image_file:
+                        return replicate.run(settings.IMAGE_TO_TEXT, input={"image": image_file, "prompt": prompt})
+
+            repl_output = await loop.run_in_executor(None, run_replicate)
+
+            return repl_output
+        
+        except Exception as e:
+            # print(f"Error executing the image reader tool: {str(e)}")
+            return ""
+        
+    async def aws_image_labels_async(self, image_path):
+        is_url = urlparse(image_path).scheme != "" and not os.path.isfile(image_path)
+        
+        try:
+            if not is_url:
+                with open(image_path, "rb") as image_file:
+                    resized_image_bytes = await self._resize_image(image_file)
+                    response = await self._detect_labels_from_bytes(Image={"Bytes": resized_image_bytes})
+                    objects = [obj["Name"] for obj in response["Labels"]]
+                    return objects
+            if is_url:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(image_path) as response:
+                        image_data = await response.read()
+                resized_image_bytes = await self._resize_image(io.BytesIO(image_data))
+                response = await self._detect_labels_from_bytes(Image={"Bytes": resized_image_bytes})
+                objects = [obj["Name"] for obj in response["Labels"]]
+                return objects
+        except:
+            return [""]
+        
+    async def _detect_labels_from_bytes(self, **kwargs):
+        loop = asyncio.get_running_loop()
+        partial_fn = partial(settings.rek_client.detect_labels, **kwargs)
+        response = await loop.run_in_executor(None, partial_fn)
+        return response
+    
+    async def aws_OCR_async(self, image_path):
+        is_url = urlparse(image_path).scheme != "" and not os.path.isfile(image_path)
+        
+        try:
+            if not is_url:
+                with open(image_path, "rb") as image_file:
+                    resized_image_bytes = await self._resize_image(image_file)
+                    response = await self._detect_text_from_bytes(Image={"Bytes": resized_image_bytes})
+                    objects = [obj["DetectedText"] for obj in response["TextDetections"] if obj["Confidence"] > 90]
+                    return objects
+            if is_url:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(image_path) as response:
+                        image_data = await response.read()
+                resized_image_bytes = await self._resize_image(io.BytesIO(image_data))
+                response = await self._detect_text_from_bytes(Image={"Bytes": resized_image_bytes})
+                objects = [obj["DetectedText"] for obj in response["TextDetections"] if obj["Confidence"] > 90]
+                return objects
+        except:
+            return [""]
+        
+    async def _detect_text_from_bytes(self, **kwargs):
+        loop = asyncio.get_running_loop()
+        partial_fn = partial(settings.rek_client.detect_text, **kwargs)
+        response = await loop.run_in_executor(None, partial_fn)
+        return response
+
+    async def _resize_image(self, image_data):
+        loop = asyncio.get_running_loop()
+        img = await loop.run_in_executor(None, Image.open, image_data)
+
+        max_size = (700, 700)
+        img.thumbnail(max_size)
+
+        # Save the resized image to a bytes buffer
+        output_buffer = io.BytesIO()
+        save_image = partial(img.save, output_buffer, format=img.format)
+        await loop.run_in_executor(None, save_image)
+        return output_buffer.getvalue()
+    
+    async def image_reader_async(self, image_path_and_prompt):
+        """
+        Generates the description of an image from a prompt provided to it and also provides the list of objects detected in the image.
+        """
+        image_path = image_path_and_prompt.split("|||")[0]
+        # Gather all the coroutines to execute them in parallel
+        description_task = self.image_caption_async(image_path_and_prompt)
+        objects_task = self.aws_image_labels_async(image_path)
+        characters_task = self.aws_OCR_async(image_path)
+        
+        # Wait for all the tasks to complete in parallel
+        description, objects, characters = await asyncio.gather(description_task, objects_task, characters_task)
+        
+        return f"Description: {description}\n" + f"Objects: {', '.join(objects)}\n" if objects != [""] else "" + f"OCR Results: {', '.join(characters)}\n" if characters != [""] else ""
+    
+    async def _arun(self, image_path_and_prompt: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None) -> str:
+        """Use the tool asynchronously."""
+        return await self.image_reader_async(image_path_and_prompt)
+    
+    def _run(self, image_path_and_prompt: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> str:
+        """Use the tool."""
+        return asyncio.run(self.image_reader_async(image_path_and_prompt))
+
+image_reader = CustomImageReaderTool()
+image_reader_tool = Tool(
+    name="Image Reader",
+    description="Generates the description of an image from a prompt provided to it, Provides a list of objects detected if any, and also analyses any text in the image from an OCR if a text is present. \
+        The input format to this tool SHOULD BE in the following format: image_path|||prompt message where image_path is the path to the image and prompt is a COMPREHENSIVE AND VERBOSE and should be in English regarding the information required from the image.\
+        Output from image reader is always valid. You may summarize the objects detected portion if there are repeated objects.\
+        Make sure to give it a very detailed and comprehensive question as prompt.\
+        You must analyze the output from this tool and provide a comprehensive and detailed final answer based on your analysis of the output from this tool.",
+    func=image_reader.run,
+    coroutine=image_reader.arun,
+)
+
+async_tools.extend([wolfram_tool, image_reader_tool])
 
 ###########################################
 
