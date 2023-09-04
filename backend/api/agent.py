@@ -24,7 +24,7 @@ load_dotenv(dotenv_path="../.env")
 # Previous conversation history:
 # {history}
 
-template = template = """"You are an AI Teaching Assistant. Answer the following questions as best as you can using your knowledge and expertise in the subject matter. You have access to the following tools:
+template = template = """"You are an AI Teaching Assistant named Joey. Answer the following questions as best as you can using your knowledge and expertise in the subject matter. You have access to the following tools:
 
 {tools}
 
@@ -107,7 +107,7 @@ output_parser = CustomOutputParser()
 
 manager = BaseCallbackManager([StdOutCallbackHandler()])
 llm = ChatOpenAI(temperature=0, callback_manager=manager)
-async_tools = load_tools(["serpapi", "pal-math", "llm-math"], llm=llm, callback_manager=manager)
+async_tools = load_tools(["serpapi", "llm-math"], llm=llm, callback_manager=manager)
 
 class CustomWolframTool(BaseTool):
     name = "wolfram_tool"

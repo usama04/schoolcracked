@@ -35,7 +35,7 @@ load_dotenv()
 
 ############ LLM and tools ###############
 llm=ChatOpenAI(temperature=0)
-async_tools = load_tools(["serpapi", "pal-math", "llm-math"], llm=llm)
+async_tools = load_tools(["serpapi", "llm-math"], llm=llm)
 class CustomWolframTool(BaseTool):
     name = "wolfram_tool"
     description = "Queries the Wolfram Alpha API. Useful for when you need to answer questions about Calculus, Algebra and Symbolic math. Input should be a search query."
@@ -83,10 +83,10 @@ class CustomImageReaderTool(BaseTool):
 
             def run_replicate():
                 if is_url:
-                    return replicate.run(settings.IMAGE_TO_TEXT, input={"image": image_path, "prompt": prompt})
+                    return replicate.run(settings.IMAGE_TO_TEXT, input={"image": image_path, "question": prompt})
                 else:
                     with open(image_path, "rb") as image_file:
-                        return replicate.run(settings.IMAGE_TO_TEXT, input={"image": image_file, "prompt": prompt})
+                        return replicate.run(settings.IMAGE_TO_TEXT, input={"image": image_file, "question": prompt})
 
             repl_output = await loop.run_in_executor(None, run_replicate)
 
