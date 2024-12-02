@@ -19,18 +19,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY api api
-COPY config config
-COPY models models
-COPY schemas schemas
-COPY routes routes
-COPY __init__.py .
-COPY services.py .
-COPY settings.py .
-COPY main.py .
-COPY .env .
+COPY . .
 
-# Expose port 8000 for FastAPI
+# Expose port 5001 for FastAPI
 EXPOSE 5001
 
 # Start the application

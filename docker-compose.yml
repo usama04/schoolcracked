@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: schoolcracked
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  mongodb:
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_DATABASE: schoolcracked
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  authbackend:
+    build:
+      context: ./AuthBackend
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/schoolcracked
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      - DATABASE_URL=mongodb://admin:password@mongodb:27017/schoolcracked
+    depends_on:
+      - db
+      - mongodb
+    ports:
+      - "5001:5001"
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+  mongo_data:

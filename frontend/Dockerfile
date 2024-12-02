@@ -17,8 +17,11 @@ COPY src src
 # Build the application
 RUN npm run build
 
+# Install serve to serve the built files
+RUN npm install -g serve
+
 # Expose port 3000 for the frontend
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["serve", "-s", "build"]
