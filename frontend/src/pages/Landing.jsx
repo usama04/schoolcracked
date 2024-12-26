@@ -96,21 +96,21 @@ const Landing = () => {
             <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><HiDocument /></span>
-                <h3>Chat with Documents (To be released)</h3>
+                <h3>Chat with Documents</h3>
               </div>
             </div>
 
             <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><BiImage /></span>
-                <h3>Chat with Images (To be released)</h3>
+                <h3>Chat with Images</h3>
               </div>
             </div>
 
             <div className="col-lg-2">
               <div className="course bg-dark">
                 <span className="wrap-icon"><BsPencilFill /></span>
-                <h3>Plagiarism Checker (To be released)</h3>
+                <h3>Plagiarism Checker</h3>
               </div>
             </div>
 
